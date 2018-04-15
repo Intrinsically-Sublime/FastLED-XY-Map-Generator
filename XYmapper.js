@@ -41,6 +41,16 @@ function hflipLayout(event) {
   printMap();
 }
 
+function preservePixels(event) {
+  if (event.checked) {
+    preserveP = 1;
+  } else {
+    preserveP = 0;
+  }
+
+  printMap();
+}
+
 function vflipLayout(event) {
   if (event.checked) {
     vflip = 1;
@@ -72,13 +82,14 @@ function buildArray(num_leds) {
   vertical = (document.getElementById("verticalCHK")).checked;
   hflip = (document.getElementById("hflipCHK")).checked;
   vflip = (document.getElementById("vflipCHK")).checked;
+  preserveP = (document.getElementById("preserveCHK")).checked;
 
 
   for (i = 0; i < num_leds; i++) {
     pixelarray[i] = [];
-    pixelarray[i][0] = "E";
-    pixelarray[i][1] = "N";
-    pixelarray[i][2] = 0;
+    pixelarray[i][0] = "E";	// E = Enable, D = Disable
+    pixelarray[i][1] = "N";	// N = No Arrow, R = Right, L = Left, D = Down, U = Up
+    pixelarray[i][2] = 0;	// LED Index number
   }
 
   pixelarray.join("\",\"");
@@ -296,7 +307,7 @@ function printMap() {
   mapHTML += '#define MATRIX_WIDTH ' + xdim + '<BR>';
   mapHTML += '#define MATRIX_HEIGHT ' + ydim + '<BR><BR>';
   mapHTML += '#define NUM_LEDS ' + visibleLEDs + '	// Number of visible LEDs<BR><BR>';
-  mapHTML += 'CRGB leds[' + (visibleLEDs+1) + '];	// Adds 1 pixel for hidding extra data<BR><BR>';
+  mapHTML += 'CRGB leds[' + (visibleLEDs+1) + '];	// 1 extra pixel for hidding extra data<BR><BR>';
 
   if (num_leds <= 256) {
     mapHTML += 'uint8_t XY (uint8_t x, uint8_t y) {<BR>';
@@ -316,10 +327,10 @@ function printMap() {
     mapHTML += '		';
     for (x = 0; x < xdim; x++) {
       currentPixel = pixelarray[ledindex][2];
-      if (currentPixel < visibleLEDs) {
-        mapHTML += pad('    ', currentPixel, true);
-      } else {
+      if (currentPixel >= visibleLEDs && preserveP == 0) {
         mapHTML += pad('    ', visibleLEDs, true);
+      } else {
+        mapHTML += pad('    ', currentPixel, true);
       }
       ledindex++;
       if (ledindex < num_leds) mapHTML += ",";
