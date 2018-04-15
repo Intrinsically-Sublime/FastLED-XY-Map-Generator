@@ -334,12 +334,16 @@ function printMap() {
 
   if (discardP == 1) {
     mapHTML += '// XY mapping function discarding unchecked pixel data.<BR>';
-    mapHTML += '// ' + (numleds * 3) + ' Bytes\'s of SRAM required.<BR>';
-    mapHTML += '// You are saving ' + ((((xdim * ydim) + 1) - numleds) * 3) + ' Bytes\'s of SRAM.<BR><BR>';
+    mapHTML += '// Requires ' + (numleds * 3) + ' Bytes\'s of SRAM';
+    mapHTML += ' and ' + ((numleds * 30) / 1000) + ' ms/frame.<BR>';
+    mapHTML += '// You are saving ' + ((((xdim * ydim) + 1) - numleds) * 3) + ' Bytes\'s of SRAM';
+    mapHTML += ' and ' + ((((((xdim * ydim) + 1) * 30) / 1000) - ((numleds * 30) / 1000)).toFixed(2)) + ' ms/frame.<BR><BR>';
   } else {
     mapHTML += '// XY mapping function preserving all pixel data.<BR>';
-    mapHTML += '// ' + (numleds * 3) + ' Bytes\'s of SRAM required.<BR>';
-    mapHTML += '// You COULD save ' + ((numleds - (countActiveLEDs() + 1)) * 3) + ' Bytes\'s of SRAM.<BR><BR>';
+    mapHTML += '// Requires ' + (numleds * 3) + ' Bytes\'s of SRAM';
+    mapHTML += ' and ' + ((numleds * 30) / 1000) + ' ms/frame.<BR>';
+    mapHTML += '// You COULD save ' + ((numleds - (countActiveLEDs() + 1)) * 3) + ' Bytes\'s of SRAM';
+    mapHTML += ' and ' + (((((numleds * 30) / 1000)) - (((countActiveLEDs() + 1) * 30) / 1000)).toFixed(2)) + ' ms/frame.<BR><BR>';
   }
 
   mapHTML += '// Parameters for width and height<BR>';
