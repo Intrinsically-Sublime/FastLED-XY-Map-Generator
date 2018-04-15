@@ -332,7 +332,13 @@ function printMap() {
   ledindex = 0;
   mapHTML += '<PRE>';
 
-  mapHTML += '// Params for width and height<BR>';
+  if (preserveP == 0) {
+    mapHTML += '// XY mapping function discarding unmapped pixel data.<BR><BR>';
+  } else {
+    mapHTML += '// XY mapping function preserving all pixel data.<BR><BR>';
+  }
+
+  mapHTML += '// Parameters for width and height<BR>';
   mapHTML += '#define MATRIX_WIDTH ' + xdim + '<BR>';
   mapHTML += '#define MATRIX_HEIGHT ' + ydim + '<BR><BR>';
   mapHTML += '#define NUM_LEDS ' + visibleLEDs + '';
