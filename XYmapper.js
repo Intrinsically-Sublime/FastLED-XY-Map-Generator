@@ -333,8 +333,16 @@ function printMap() {
   mapHTML += '// Params for width and height<BR>';
   mapHTML += '#define MATRIX_WIDTH ' + xdim + '<BR>';
   mapHTML += '#define MATRIX_HEIGHT ' + ydim + '<BR><BR>';
-  mapHTML += '#define NUM_LEDS ' + visibleLEDs + '	// Number of visible LEDs<BR><BR>';
-    mapHTML += 'CRGB leds[' + numleds + '];';
+  mapHTML += '#define NUM_LEDS ' + visibleLEDs + '';
+  if (preserveP == 0) {
+    mapHTML += '	// Number of LEDs visible out of ' + visibleLEDs + '<BR><BR>';
+  } else {
+    mapHTML += '	// Number of data slots in Matrix<BR><BR>';
+    mapHTML += '// ' + countActiveLEDs() + ' LEDs visible out of ' + visibleLEDs + '<BR><BR>';
+  }
+
+
+  mapHTML += 'CRGB leds[' + numleds + '];';
   if (preserveP == 0) {
     mapHTML += '	// 1 extra pixel for hiding discarded and out of bounds data<BR><BR>';
   } else {
