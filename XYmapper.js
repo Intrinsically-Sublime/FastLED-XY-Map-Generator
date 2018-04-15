@@ -41,11 +41,11 @@ function hflipLayout(event) {
   printMap();
 }
 
-function preservePixels(event) {
+function discardPixels(event) {
   if (event.checked) {
-    preserveP = 1;
+    discardP = 1;
   } else {
-    preserveP = 0;
+    discardP = 0;
   }
 
   printMap();
@@ -95,7 +95,7 @@ function buildArray(num_leds) {
   vertical = (document.getElementById("verticalCHK")).checked;
   hflip = (document.getElementById("hflipCHK")).checked;
   vflip = (document.getElementById("vflipCHK")).checked;
-  preserveP = (document.getElementById("preserveCHK")).checked;
+  discardP = (document.getElementById("discardCHK")).checked;
   clearAll = (document.getElementById("clearAllCHK")).checked;
 
 
@@ -318,7 +318,7 @@ function pad(pad, str, padLeft) {
 
 function printMap() {
   var currentPixel = 0;
-  if (preserveP == 0) {
+  if (discardP == 1) {
     var visibleLEDs = countActiveLEDs();
     var hiddenPixel = visibleLEDs;
   } else {
@@ -332,17 +332,21 @@ function printMap() {
   ledindex = 0;
   mapHTML += '<PRE>';
 
-  if (preserveP == 0) {
-    mapHTML += '// XY mapping function discarding unmapped pixel data.<BR><BR>';
+  if (discardP == 1) {
+    mapHTML += '// XY mapping function discarding unchecked pixel data.<BR>';
+    mapHTML += '// ' + (numleds * 3) + ' Bytes\'s of SRAM required.<BR>';
+    mapHTML += '// You are saving ' + ((((xdim * ydim) + 1) - numleds) * 3) + ' Bytes\'s of SRAM.<BR><BR>';
   } else {
-    mapHTML += '// XY mapping function preserving all pixel data.<BR><BR>';
+    mapHTML += '// XY mapping function preserving all pixel data.<BR>';
+    mapHTML += '// ' + (numleds * 3) + ' Bytes\'s of SRAM required.<BR>';
+    mapHTML += '// You COULD save ' + ((numleds - (countActiveLEDs() + 1)) * 3) + ' Bytes\'s of SRAM.<BR><BR>';
   }
 
   mapHTML += '// Parameters for width and height<BR>';
   mapHTML += '#define MATRIX_WIDTH ' + xdim + '<BR>';
   mapHTML += '#define MATRIX_HEIGHT ' + ydim + '<BR><BR>';
   mapHTML += '#define NUM_LEDS ' + visibleLEDs + '';
-  if (preserveP == 0) {
+  if (discardP == 1) {
     mapHTML += '	// Number of LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
   } else {
     mapHTML += '	// Number of data slots in Matrix<BR><BR>';
@@ -350,7 +354,7 @@ function printMap() {
   }
 
   mapHTML += 'CRGB leds[' + numleds + '];';
-  if (preserveP == 0) {
+  if (discardP == 1) {
     mapHTML += '	// 1 extra pixel for hiding discarded and out of bounds data<BR><BR>';
   } else {
     mapHTML += '	// 1 extra pixel for hiding out of bounds data<BR><BR>';
@@ -374,7 +378,7 @@ function printMap() {
     mapHTML += '		';
     for (x = 0; x < xdim; x++) {
       currentPixel = pixelarray[ledindex][2];
-      if (currentPixel >= visibleLEDs && preserveP == 0) {
+      if (currentPixel >= visibleLEDs && discardP == 1) {
         mapHTML += pad('    ', visibleLEDs, true);
       } else {
         mapHTML += pad('    ', currentPixel, true);
