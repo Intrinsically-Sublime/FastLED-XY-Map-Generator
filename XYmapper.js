@@ -320,8 +320,10 @@ function printMap() {
   var currentPixel = 0;
   if (preserveP == 0) {
     var visibleLEDs = countActiveLEDs();
+    var hiddenPixel = visibleLEDs;
   } else {
     var visibleLEDs = xdim * ydim;
+    var hiddenPixel = visibleLEDs;
   }
   var numleds = visibleLEDs + 1;
   mapDiv = document.getElementById("result");
@@ -355,7 +357,7 @@ function printMap() {
     mapHTML += 'uint16_t XY (uint16_t x, uint16_t y) {<BR>';
   }
   mapHTML += '	// any out of bounds address maps to the hidden pixel<BR>'
-  mapHTML += '	if (x >= MATRIX_WIDTH || y >= MATRIX_HEIGHT) { return ' + numleds + '; }<BR><BR>';
+  mapHTML += '	if (x >= MATRIX_WIDTH || y >= MATRIX_HEIGHT) { return ' + hiddenPixel + '; }<BR><BR>';
 
   if (num_leds <= 256) {
     mapHTML += '	const uint8_t XYTable[] = ';
