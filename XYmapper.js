@@ -296,7 +296,13 @@ function pad(pad, str, padLeft) {
 
 function printMap() {
   var currentPixel = 0;
-  var visibleLEDs = countActiveLEDs();
+  if (preserveP == 0) {
+    var visibleLEDs = countActiveLEDs();
+    var numleds = visibleLEDs + 1;
+  } else {
+    var visibleLEDs = xdim * ydim;
+    var numleds = visibleLEDs;
+  }
   mapDiv = document.getElementById("result");
 
   mapHTML = "";
@@ -306,8 +312,18 @@ function printMap() {
   mapHTML += '// Params for width and height<BR>';
   mapHTML += '#define MATRIX_WIDTH ' + xdim + '<BR>';
   mapHTML += '#define MATRIX_HEIGHT ' + ydim + '<BR><BR>';
-  mapHTML += '#define NUM_LEDS ' + visibleLEDs + '	// Number of visible LEDs<BR><BR>';
-  mapHTML += 'CRGB leds[' + (visibleLEDs+1) + '];	// 1 extra pixel for hidding extra data<BR><BR>';
+  mapHTML += '#define NUM_LEDS ' + visibleLEDs + ' ';
+  if (preserveP == 0) {
+    mapHTML += '	// Number of visible LEDs<BR><BR>';
+  } else {
+    mapHTML += '	// Number of Pixels in array<BR><BR>';
+  }
+  mapHTML += 'CRGB leds[' + numleds + '];';
+  if (preserveP == 0) {
+    mapHTML += '	// 1 extra pixel for hidding extra data<BR><BR>';
+  } else {
+    mapHTML += '<BR><BR>';
+  }
 
   if (num_leds <= 256) {
     mapHTML += 'uint8_t XY (uint8_t x, uint8_t y) {<BR>';
