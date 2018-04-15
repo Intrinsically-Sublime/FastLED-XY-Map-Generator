@@ -63,6 +63,19 @@ function vflipLayout(event) {
   printMap();
 }
 
+function clearAllPixels(event) {
+  if (event.checked) {
+    clearAll = 1;
+  } else {
+    clearAll = 0;
+  }
+
+  buildGrid();
+  renumberLEDs();
+  drawArrows();
+  printMap();
+}
+
 
 function verticalLayout(event) {
   if (event.checked) {
@@ -83,11 +96,16 @@ function buildArray(num_leds) {
   hflip = (document.getElementById("hflipCHK")).checked;
   vflip = (document.getElementById("vflipCHK")).checked;
   preserveP = (document.getElementById("preserveCHK")).checked;
+  clearAll = (document.getElementById("clearAllCHK")).checked;
 
 
   for (i = 0; i < num_leds; i++) {
     pixelarray[i] = [];
-    pixelarray[i][0] = "E";	// E = Enable, D = Disable
+    if (clearAll == 1) {
+      pixelarray[i][0] = "D";	// E = Enable, D = Disable
+    } else {
+      pixelarray[i][0] = "E";	// E = Enable, D = Disable
+    }
     pixelarray[i][1] = "N";	// N = No Arrow, R = Right, L = Left, D = Down, U = Up
     pixelarray[i][2] = 0;	// LED Index number
   }
@@ -113,7 +131,11 @@ function buildGrid(numBoxes) {
     gridHTML += '<div class="ledrow">';
     gridHTML += '<div class="ylabels">' + j + '</div>';
     for (i = 0; i < xdim; i++) {
-      gridHTML += '<div class="ledpixel" id="pixel' + idnum + '"';
+      if (clearAll == 1) {
+        gridHTML += '<div class="disabledPixel" id="pixel' + idnum + '"';
+      } else {
+        gridHTML += '<div class="ledpixel" id="pixel' + idnum + '"';
+      }
       gridHTML += 'onclick="clearButton(this);">';
       gridHTML +='<div class="ledtext" id="pixeltext' + idnum + '">' + pixelarray[idnum][2] + '</div>';
       gridHTML += '</div>';
