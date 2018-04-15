@@ -334,7 +334,12 @@ function printMap() {
   mapHTML += '#define MATRIX_WIDTH ' + xdim + '<BR>';
   mapHTML += '#define MATRIX_HEIGHT ' + ydim + '<BR><BR>';
   mapHTML += '#define NUM_LEDS ' + visibleLEDs + '	// Number of visible LEDs<BR><BR>';
-  mapHTML += 'CRGB leds[' + numleds + '];	// 1 extra pixel for hiding out of bounds data<BR><BR>';
+    mapHTML += 'CRGB leds[' + numleds + '];';
+  if (preserveP == 0) {
+    mapHTML += '	// 1 extra pixel for hiding discarded and out of bounds data<BR><BR>';
+  } else {
+    mapHTML += '	// 1 extra pixel for hiding out of bounds data<BR><BR>';
+  }
 
   if (num_leds <= 256) {
     mapHTML += 'uint8_t XY (uint8_t x, uint8_t y) {<BR>';
