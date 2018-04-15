@@ -343,7 +343,6 @@ function printMap() {
     mapHTML += '// ' + countActiveLEDs() + ' LEDs visible out of ' + visibleLEDs + '<BR><BR>';
   }
 
-
   mapHTML += 'CRGB leds[' + numleds + '];';
   if (preserveP == 0) {
     mapHTML += '	// 1 extra pixel for hiding discarded and out of bounds data<BR><BR>';
@@ -356,7 +355,7 @@ function printMap() {
   } else {
     mapHTML += 'uint16_t XY (uint16_t x, uint16_t y) {<BR>';
   }
-  mapHTML += '	// any out of bounds address maps to the hidden pixel<BR>'
+  mapHTML += '	// map anything outside of the matrix to the extra hidden pixel<BR>'
   mapHTML += '	if (x >= MATRIX_WIDTH || y >= MATRIX_HEIGHT) { return ' + hiddenPixel + '; }<BR><BR>';
 
   if (num_leds <= 256) {
