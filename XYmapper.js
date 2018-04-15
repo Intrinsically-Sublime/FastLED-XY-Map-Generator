@@ -335,7 +335,7 @@ function printMap() {
   mapHTML += '#define MATRIX_HEIGHT ' + ydim + '<BR><BR>';
   mapHTML += '#define NUM_LEDS ' + visibleLEDs + '';
   if (preserveP == 0) {
-    mapHTML += '	// Number of LEDs visible out of ' + visibleLEDs + '<BR><BR>';
+    mapHTML += '	// Number of LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
   } else {
     mapHTML += '	// Number of data slots in Matrix<BR><BR>';
     mapHTML += '// ' + countActiveLEDs() + ' LEDs visible out of ' + visibleLEDs + '<BR><BR>';
