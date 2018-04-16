@@ -10,5 +10,6 @@ Changes from original:
 6) Calculate CRGB leds array SRAM usage.
 7) Calculate frame rate for WS2811 based LEDs including parallel output.
 8) Calculate connection points in matrix when using parallel output.
+9) Wiring layout used to create function added to comments.
 
 Try it here: https://intrinsically-sublime.github.io/FastLED-XY-Map-Generator/
