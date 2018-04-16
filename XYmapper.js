@@ -329,10 +329,8 @@ function printMap() {
   var currentPixel = 0;
   if (discardP == 1) {
     var visibleLEDs = countActiveLEDs();
-    var hiddenPixel = visibleLEDs;
   } else {
     var visibleLEDs = xdim * ydim;
-    var hiddenPixel = visibleLEDs;
   }
   var numleds = visibleLEDs + 1;
   var frameRate = (((1000 / ((numleds * 30) / 1000)) - 0.5) * pout).toFixed(0);
@@ -375,15 +373,15 @@ function printMap() {
     mapHTML += '	// 1 extra pixel for hiding out of bounds data<BR><BR>';
   }
 
-  if (num_leds <= 256) {
+  if (visibleLEDs < 256) {
     mapHTML += 'uint8_t XY (uint8_t x, uint8_t y) {<BR>';
   } else {
     mapHTML += 'uint16_t XY (uint16_t x, uint16_t y) {<BR>';
   }
   mapHTML += '	// map anything outside of the matrix to the extra hidden pixel<BR>'
-  mapHTML += '	if (x >= MATRIX_WIDTH || y >= MATRIX_HEIGHT) { return ' + hiddenPixel + '; }<BR><BR>';
+  mapHTML += '	if (x >= MATRIX_WIDTH || y >= MATRIX_HEIGHT) { return ' + visibleLEDs + '; }<BR><BR>';
 
-  if (num_leds <= 256) {
+  if (visibleLEDs < 256) {
     mapHTML += '	const uint8_t XYTable[] = ';
   } else {
     mapHTML += '	const uint16_t XYTable[] = ';
