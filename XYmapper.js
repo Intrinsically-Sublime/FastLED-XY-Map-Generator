@@ -337,8 +337,9 @@ function pad(pad, str, padLeft) {
 
 function printMap() {
   var currentPixel = 0;
+  var activeLEDcount = countActiveLEDs();
   if (discardP == 1) {
-    var visibleLEDs = countActiveLEDs();
+    var visibleLEDs = activeLEDcount;
   } else {
     var visibleLEDs = xdim * ydim;
   }
@@ -361,12 +362,12 @@ function printMap() {
     mapHTML += '// XY mapping function preserving all pixel data.<BR>';
     mapHTML += '// Requires ' + (numleds * 3) + ' Bytes\'s of SRAM';
     mapHTML += ' and ' + ((numleds * 30) / 1000) + ' ms/frame for WS2811 based LEDs.<BR>';
-    mapHTML += '// You COULD save ' + ((numleds - (countActiveLEDs() + 1)) * 3) + ' Bytes\'s of SRAM';
-    mapHTML += ' and ' + (((((numleds * 30) / 1000)) - (((countActiveLEDs() + 1) * 30) / 1000)).toFixed(2)) + ' ms/frame for WS2811 based LEDs.<BR>';
+    mapHTML += '// You COULD save ' + ((numleds - (activeLEDcount + 1)) * 3) + ' Bytes\'s of SRAM';
+    mapHTML += ' and ' + (((((numleds * 30) / 1000)) - (((activeLEDcount + 1) * 30) / 1000)).toFixed(2)) + ' ms/frame for WS2811 based LEDs.<BR>';
   }
   if (pout > 1) {
     mapHTML += '// Maximum frame rate for WS2811 based LEDs = ' + frameRate + ' FPS using ' + pout + ' parallel outputs.<BR>';
-    mapHTML += '// Connect LEDs every ' + Math.ceil((countActiveLEDs() / pout)) + ' LEDs for ' + pout + ' way parallel output.<BR>';
+    mapHTML += '// Connect LEDs every ' + Math.ceil((activeLEDcount / pout)) + ' LEDs for ' + pout + ' way parallel output.<BR>';
   } else {
     mapHTML += '// Maximum frame rate for WS2811 based LEDs = ' + frameRate + ' FPS using 1 output.<BR>';
   }
@@ -376,7 +377,7 @@ function printMap() {
   mapHTML += '#define MATRIX_WIDTH ' + xdim + '<BR>';
   mapHTML += '#define MATRIX_HEIGHT ' + ydim + '<BR><BR>';
   mapHTML += '#define NUM_LEDS ' + visibleLEDs + '';
-  mapHTML += '	// ' + countActiveLEDs() + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
+  mapHTML += '	// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
 
   mapHTML += 'CRGB leds[' + numleds + '];';
   if (discardP == 1) {
