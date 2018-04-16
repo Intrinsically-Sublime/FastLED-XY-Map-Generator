@@ -19,6 +19,8 @@
     <p>Copy the resulting function and paste into your code.</p>
     <p>The function will map ordinary X-Y coordinates to the irregular array.</p>
     <p>You have the option to preserve all the Pixel data for the hidden location or discard them and save space and cpu cycles during FastLED.show.</p>
+    <p>Calculate SRAM used by the leds CGRB array.</p>
+    <p>Calculate maximum frame rate for WS2811 based LEDs (WS2811, WS2812/B, WS2813, SK6812, SK6822, etc) using parallel output.</p>
 
     <div class="controls">
       <input type="checkbox" id="serpentineCHK" onchange="serpentineLayout(this)" checked>Serpentine</input>
@@ -27,9 +29,10 @@
       <input type="checkbox" id="hflipCHK" onchange="hflipLayout(this)">H-Flip</input><br>
       <input type="checkbox" id="discardCHK" onchange="discardPixels(this)">Discard unchecked pixel data</input><br>
       <input type="checkbox" id="clearAllCHK" onchange="clearAllPixels(this)">Start with all pixels unchecked</input><br>
+      <div class="inputBox"><input id="poutBOX" onchange="parallelOut(this)" type="number" name="poutBOX" min="1" max="16" value="1"/><label class="inputText">Parallel Outputs</label></div>
       <br>
-      <div class="inputBox"><label class="inputText">Width</label><input id="xdim" type="number" name="xdim" min="1" value="16"/></div>
-      <div class="inputBox"><label class="inputText">Height</label><input id="ydim" type="number" name="ydim" min="1" value="5"/></div>
+      <div class="inputBox"><input id="xdim" type="number" name="xdim" min="1" value="16"/><label class="inputText">Matrix Width</label></div>
+      <div class="inputBox"><input id="ydim" type="number" name="ydim" min="1" value="5"/><label class="inputText">Matrix Height</label></div>
     </div>
       <button id="rebuildArray" onclick="buildGrid()">Rebuild</button>
 

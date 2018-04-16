@@ -7,5 +7,8 @@ Changes from original:
 3) Option to discard unwanted pixel data and write only to 1 hidden pixel. Reduces CGRB array by the amount of unused pixels reducing memory usage and reducing time required to write out data on call of FastLED.show.
 4) Option to clear all pixel data and start with a blank grid. Good for sparse matrices with less pixels than empty space.
 5) Remove unneeded variable assignments to reduce memory usage.
+6) Calculate SRAM usage.
+7) Calculate frame rate for WS2811 based LEDs including parallel output.
+8) Calculate connection points in matrix when using parallel output.
 
 Try it here: https://intrinsically-sublime.github.io/FastLED-XY-Map-Generator/

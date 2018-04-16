@@ -14,6 +14,9 @@ var serpentine = 0;
 var hflip = 0;
 var vflip = 1;
 var vertical = 0;
+var discardP = 1;
+var clearAll = 0;
+var pout = 1;
 
 
 function serpentineLayout(event) {
@@ -48,6 +51,11 @@ function discardPixels(event) {
     discardP = 0;
   }
 
+  printMap();
+}
+
+function parallelOut(event) {
+  pout = (document.getElementById("poutBOX")).value;
   printMap();
 }
 
@@ -97,6 +105,7 @@ function buildArray(num_leds) {
   vflip = (document.getElementById("vflipCHK")).checked;
   discardP = (document.getElementById("discardCHK")).checked;
   clearAll = (document.getElementById("clearAllCHK")).checked;
+  pout = (document.getElementById("poutBOX")).value;
 
 
   for (i = 0; i < num_leds; i++) {
@@ -326,6 +335,7 @@ function printMap() {
     var hiddenPixel = visibleLEDs;
   }
   var numleds = visibleLEDs + 1;
+  var frameRate = (((1000 / ((numleds * 30) / 1000)) - 0.5) * pout).toFixed(0);
   mapDiv = document.getElementById("result");
 
   mapHTML = "";
@@ -335,27 +345,28 @@ function printMap() {
   if (discardP == 1) {
     mapHTML += '// XY mapping function discarding unchecked pixel data.<BR>';
     mapHTML += '// Requires ' + (numleds * 3) + ' Bytes\'s of SRAM';
-    mapHTML += ' and ' + ((numleds * 30) / 1000) + ' ms/frame.<BR>';
+    mapHTML += ' and ' + ((numleds * 30) / 1000) + ' ms/frame for WS2811 based LEDs.<BR>';
     mapHTML += '// You are saving ' + ((((xdim * ydim) + 1) - numleds) * 3) + ' Bytes\'s of SRAM';
-    mapHTML += ' and ' + ((((((xdim * ydim) + 1) * 30) / 1000) - ((numleds * 30) / 1000)).toFixed(2)) + ' ms/frame.<BR><BR>';
+    mapHTML += ' and ' + ((((((xdim * ydim) + 1) * 30) / 1000) - ((numleds * 30) / 1000)).toFixed(2)) + ' ms/frame for WS2811 based LEDs.<BR>';
   } else {
     mapHTML += '// XY mapping function preserving all pixel data.<BR>';
     mapHTML += '// Requires ' + (numleds * 3) + ' Bytes\'s of SRAM';
-    mapHTML += ' and ' + ((numleds * 30) / 1000) + ' ms/frame.<BR>';
+    mapHTML += ' and ' + ((numleds * 30) / 1000) + ' ms/frame for WS2811 based LEDs.<BR>';
     mapHTML += '// You COULD save ' + ((numleds - (countActiveLEDs() + 1)) * 3) + ' Bytes\'s of SRAM';
-    mapHTML += ' and ' + (((((numleds * 30) / 1000)) - (((countActiveLEDs() + 1) * 30) / 1000)).toFixed(2)) + ' ms/frame.<BR><BR>';
+    mapHTML += ' and ' + (((((numleds * 30) / 1000)) - (((countActiveLEDs() + 1) * 30) / 1000)).toFixed(2)) + ' ms/frame for WS2811 based LEDs.<BR>';
+  }
+  if (pout > 1) {
+    mapHTML += '// Maximum frame rate for WS2811 based LEDs = ' + frameRate + ' FPS using ' + pout + ' parallel outputs.<BR>';
+    mapHTML += '// Connect LEDs every ' + Math.ceil((countActiveLEDs() / pout)) + ' LEDs for ' + pout + ' way parallel output.<BR><BR>';
+  } else {
+    mapHTML += '// Maximum frame rate for WS2811 based LEDs = ' + frameRate + ' FPS using 1 output.<BR><BR>';
   }
 
   mapHTML += '// Parameters for width and height<BR>';
   mapHTML += '#define MATRIX_WIDTH ' + xdim + '<BR>';
   mapHTML += '#define MATRIX_HEIGHT ' + ydim + '<BR><BR>';
   mapHTML += '#define NUM_LEDS ' + visibleLEDs + '';
-  if (discardP == 1) {
-    mapHTML += '	// Number of LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
-  } else {
-    mapHTML += '	// Number of data slots in Matrix<BR><BR>';
-    mapHTML += '// ' + countActiveLEDs() + ' LEDs visible out of ' + visibleLEDs + '<BR><BR>';
-  }
+  mapHTML += '	// ' + countActiveLEDs() + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
 
   mapHTML += 'CRGB leds[' + numleds + '];';
   if (discardP == 1) {
