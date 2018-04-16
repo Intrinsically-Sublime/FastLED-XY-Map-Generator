@@ -17,13 +17,18 @@ var vertical = 0;
 var discardP = 1;
 var clearAll = 0;
 var pout = 1;
-
+var wiringSerp = "serpentine";
+var wiringVert = "horizontal";
+var wiringVFlip = "top";
+var wiringHFlip = "left";
 
 function serpentineLayout(event) {
   if (event.checked) {
     serpentine = 1;
+    wiringSerp = "serpentine";
   } else {
     serpentine = 0;
+    wiringSerp = "striped";
   }
 
   renumberLEDs();
@@ -35,8 +40,10 @@ function serpentineLayout(event) {
 function hflipLayout(event) {
   if (event.checked) {
     hflip = 1;
+    wiringHFlip = "right";
   } else {
     hflip = 0;
+    wiringHFlip = "left";
   }
 
   renumberLEDs();
@@ -62,8 +69,10 @@ function parallelOut(event) {
 function vflipLayout(event) {
   if (event.checked) {
     vflip = 1;
+    wiringVFlip = "bottom";
   } else {
     vflip = 0;
+    wiringVFlip = "top";
   }
 
   renumberLEDs();
@@ -84,12 +93,13 @@ function clearAllPixels(event) {
   printMap();
 }
 
-
 function verticalLayout(event) {
   if (event.checked) {
     vertical = 1;
+    wiringVert = "vertical";
   } else {
     vertical = 0;
+    wiringVert = "horizontal";
   }
 
   renumberLEDs();
@@ -334,6 +344,7 @@ function printMap() {
   }
   var numleds = visibleLEDs + 1;
   var frameRate = (((1000 / ((numleds * 30) / 1000)) - 0.5) * pout).toFixed(0);
+
   mapDiv = document.getElementById("result");
 
   mapHTML = "";
@@ -355,10 +366,11 @@ function printMap() {
   }
   if (pout > 1) {
     mapHTML += '// Maximum frame rate for WS2811 based LEDs = ' + frameRate + ' FPS using ' + pout + ' parallel outputs.<BR>';
-    mapHTML += '// Connect LEDs every ' + Math.ceil((countActiveLEDs() / pout)) + ' LEDs for ' + pout + ' way parallel output.<BR><BR>';
+    mapHTML += '// Connect LEDs every ' + Math.ceil((countActiveLEDs() / pout)) + ' LEDs for ' + pout + ' way parallel output.<BR>';
   } else {
-    mapHTML += '// Maximum frame rate for WS2811 based LEDs = ' + frameRate + ' FPS using 1 output.<BR><BR>';
+    mapHTML += '// Maximum frame rate for WS2811 based LEDs = ' + frameRate + ' FPS using 1 output.<BR>';
   }
+  mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR><BR>';
 
   mapHTML += '// Parameters for width and height<BR>';
   mapHTML += '#define MATRIX_WIDTH ' + xdim + '<BR>';
