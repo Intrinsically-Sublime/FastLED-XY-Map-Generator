@@ -3,7 +3,7 @@ Automatically generates XYmap function for irregular/gapped LED arrays.
 
 Changes from original:
 1) Uses define instead of const int for Matrix size assignment and change variable name.
-2) Uses one extra hidden pixel for writing out of bounds data to ensure all pixel data is preserved for use while shifting data.
+2) Uses one extra pixel for writing out of bounds data to ensure all pixel data is preserved for use while shifting data.
 3) Option to discard unwanted pixel data and write only to 1 hidden pixel to save memory and increase frame rate.
 4) Option to clear all pixel data and start with a blank grid. Good for sparse matrices with less pixels than empty space.
 5) Remove unneeded variable assignments to reduce memory usage.
