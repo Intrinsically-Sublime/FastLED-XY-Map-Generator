@@ -382,10 +382,16 @@ function printMap() {
     mapHTML += '	// 1 extra pixel for hiding out of bounds data<BR><BR>';
   }
 
-  if (xdim < 256 && ydim < 256) {
-    mapHTML += 'uint8_t XY (uint8_t x, uint8_t y) {<BR>';
+  if (visibleLEDs < 256) {
+    mapHTML += 'uint8_t XY ';
   } else {
-    mapHTML += 'uint16_t XY (uint16_t x, uint16_t y) {<BR>';
+    mapHTML += 'uint16_t XY ';
+  }
+
+  if (xdim < 256 && ydim < 256) {
+    mapHTML += '(uint8_t x, uint8_t y) {<BR>';
+  } else {
+    mapHTML += '(uint16_t x, uint16_t y) {<BR>';
   }
   mapHTML += '	// map anything outside of the matrix to the extra hidden pixel<BR>'
   mapHTML += '	if (x >= MATRIX_WIDTH || y >= MATRIX_HEIGHT) { return ' + visibleLEDs + '; }<BR><BR>';
