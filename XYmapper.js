@@ -34,7 +34,6 @@ function serpentineLayout(event) {
   renumberLEDs();
   drawArrows();
   printMap();
-
 }
 
 function hflipLayout(event) {
@@ -107,7 +106,6 @@ function verticalLayout(event) {
   printMap();
 }
 
-
 function buildArray(num_leds) {
   serpentine = (document.getElementById("serpentineCHK")).checked;
   vertical = (document.getElementById("verticalCHK")).checked;
@@ -116,7 +114,6 @@ function buildArray(num_leds) {
   discardP = (document.getElementById("discardCHK")).checked;
   clearAll = (document.getElementById("clearAllCHK")).checked;
   pout = (document.getElementById("poutBOX")).value;
-
 
   for (i = 0; i < num_leds; i++) {
     pixelarray[i] = [];
@@ -199,9 +196,7 @@ function clearArrows(element) {
   while(childnodes[0]) {
     element.removeChild(childnodes[0]);
   }
-
 }
-
 
 function clearButton(event) {
   eventindex = parseInt((event.id).replace(/[^0-9\.]/g, ''), 10);
@@ -271,7 +266,6 @@ function renumberLEDs() {
     xtemp = ydim;
   }
 
-
   for (y = 0; y < ytemp; y++) {
     for (x = 0; x < xtemp; x++) {
       if (vertical == 0) {
@@ -338,11 +332,13 @@ function pad(pad, str, padLeft) {
 function printMap() {
   var currentPixel = 0;
   var activeLEDcount = countActiveLEDs();
+
   if (discardP == 1) {
     var visibleLEDs = activeLEDcount;
   } else {
     var visibleLEDs = xdim * ydim;
   }
+
   var numleds = visibleLEDs + 1;
   var frameRate = (((1000 / ((numleds * 30) / 1000)) - 0.5) * pout).toFixed(0);
 
@@ -386,7 +382,7 @@ function printMap() {
     mapHTML += '	// 1 extra pixel for hiding out of bounds data<BR><BR>';
   }
 
-  if (visibleLEDs < 256) {
+  if (xdim < 256 && ydim < 256) {
     mapHTML += 'uint8_t XY (uint8_t x, uint8_t y) {<BR>';
   } else {
     mapHTML += 'uint16_t XY (uint16_t x, uint16_t y) {<BR>';
@@ -416,7 +412,6 @@ function printMap() {
   }
   mapHTML += '	};<BR><BR>';
   mapHTML += '	return XYTable[(y * MATRIX_WIDTH) + x];<BR>';
-
   mapHTML += '}</PRE>';
 
   mapDiv.innerHTML = mapHTML;
