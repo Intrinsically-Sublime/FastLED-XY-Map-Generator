@@ -21,6 +21,7 @@ var wiringSerp = "serpentine";
 var wiringVert = "horizontal";
 var wiringVFlip = "top";
 var wiringHFlip = "left";
+var cylindrical = 0;
 
 function serpentineLayout(event) {
   if (event.checked) {
@@ -55,6 +56,16 @@ function discardPixels(event) {
     discardP = 1;
   } else {
     discardP = 0;
+  }
+
+  printMap();
+}
+
+function cylinderMatrix(event) {
+  if (event.checked) {
+    wrapX = 1;
+  } else {
+    wrapX = 0;
   }
 
   printMap();
@@ -113,6 +124,7 @@ function buildArray(num_leds) {
   vflip = (document.getElementById("vflipCHK")).checked;
   discardP = (document.getElementById("discardCHK")).checked;
   clearAll = (document.getElementById("clearAllCHK")).checked;
+  wrapX = (document.getElementById("cylinderCHK")).checked;
   pout = (document.getElementById("poutBOX")).value;
 
   for (i = 0; i < num_leds; i++) {
@@ -367,11 +379,17 @@ function printMap() {
   } else {
     mapHTML += '// Maximum frame rate for WS2811 based LEDs = ' + frameRate + ' FPS using 1 output.<BR>';
   }
+
+  if (wrapX == 1) {
+    mapHTML += '// Cylindrical wrapping enabled.<BR>';
+  }
+
   mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR><BR>';
 
   mapHTML += '// Parameters for width and height<BR>';
   mapHTML += '#define MATRIX_WIDTH ' + xdim + '<BR>';
   mapHTML += '#define MATRIX_HEIGHT ' + ydim + '<BR><BR>';
+
   mapHTML += '#define NUM_LEDS ' + visibleLEDs + '';
   mapHTML += '	// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
 
@@ -382,6 +400,13 @@ function printMap() {
     mapHTML += '	// 1 extra pixel for hiding out of bounds data<BR><BR>';
   }
 
+  if (wrapX == 1) {
+    mapHTML += '// Wrap function used by XY function and frame buffers<BR>';
+    mapHTML += 'int wrapX(int x) {<BR>';
+    mapHTML += '	if (x >= MATRIX_WIDTH) { return x - MATRIX_WIDTH; }<BR>	else if (x < 0) { ';
+    mapHTML += 'return MATRIX_WIDTH - abs(x); }<BR>	else { return x; }<BR>}<BR><BR>';
+  }
+
   if (visibleLEDs < 256) {
     mapHTML += 'uint8_t XY ';
   } else {
@@ -389,10 +414,15 @@ function printMap() {
   }
 
   if (xdim < 256 && ydim < 256) {
-    mapHTML += '(uint8_t x, uint8_t y) {<BR>';
+    mapHTML += '(uint8_t x, uint8_t y, bool wrap = false) {<BR>';
   } else {
-    mapHTML += '(uint16_t x, uint16_t y) {<BR>';
+    mapHTML += '(uint16_t x, uint16_t y, bool wrap = false) {<BR>';
   }
+
+  if (wrapX == 1) {
+    mapHTML += '	// Wrap X around for use on cylinders<BR>	if (wrap) { x = wrapX(x); }<BR><BR>';
+  }
+
   mapHTML += '	// map anything outside of the matrix to the extra hidden pixel<BR>'
   mapHTML += '	if (x >= MATRIX_WIDTH || y >= MATRIX_HEIGHT) { return ' + visibleLEDs + '; }<BR><BR>';
 

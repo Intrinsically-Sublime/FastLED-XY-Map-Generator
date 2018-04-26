@@ -11,5 +11,6 @@ Changes from original:
 7) Calculate frame rate for WS2811 based LEDs including parallel output.
 8) Calculate connection points in matrix when using parallel output.
 9) Wiring layout used to create function added to comments.
+10) Add option to wrap around at ends for cylindrical matrices.
 
 Try it here: https://intrinsically-sublime.github.io/FastLED-XY-Map-Generator/
