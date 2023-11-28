@@ -257,13 +257,28 @@ function renumberLEDs() {
       }
 
       pixelarray[ledpos][1] = tdir;
-
+      /* original
       if (pixelarray[ledpos][0] == "E") {
         pixelarray[ledpos][2] = activeLEDs;
         activeLEDs++;
       } else if (pixelarray[ledpos][0] == "D") {
         pixelarray[ledpos][2] = inactiveLEDs;
         inactiveLEDs++;
+      }
+      */
+      /* Updating maxleds
+      if (pixelarray[ledpos][0] == "E") {
+         pixelarray[ledpos][2] = activeLEDs;
+         activeLEDs++;
+       } else if (pixelarray[ledpos][0] == "D") {
+         pixelarray[ledpos][2] = -1;
+       }
+       */
+
+      pixelarray[ledpos][2] = activeLEDs;
+      activeLEDs++;
+      if (pixelarray[ledpos][0] == "D") {
+        pixelarray[ledpos][2] = -1;
       }
 
       pixelID = "pixeltext" + ledpos;
