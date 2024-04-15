@@ -477,6 +477,7 @@ function printMap() {
     mapHTML += "// 2D matrix settings in wLED must be Horizontal starting in the TOP LEFT (NO serpentine) regardless of your actual layout.<BR>";
     mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
     mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
+    mapHTML += '// DO NOT COPY THE COMMENTS. Only copy the array below including the outer braces{} <BR><BR>';
     mapHTML += '{"n":"matrix","map":[<BR>';
       for (x = 0; x < num_leds; x++) {
         mapHTML += pad('   ', pixelarray[ledindex][2], true);
