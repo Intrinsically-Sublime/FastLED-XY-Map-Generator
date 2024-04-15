@@ -404,11 +404,8 @@ function printMap() {
     if (wrapX == 1) {
       mapHTML += '// Cylindrical wrapping enabled.<BR>';
     }
-  }
   
-  mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
-  
-  if (wled == 0) {
+    mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
   
     mapHTML += '<BR>// Parameters for width and height<BR>';
     mapHTML += '#define MATRIX_WIDTH ' + xdim + '<BR>';
@@ -472,17 +469,23 @@ function printMap() {
     }
     mapHTML += '	};<BR><BR>';
     mapHTML += '	return XYTable[(y * MATRIX_WIDTH) + x];<BR>';
+    mapHTML += '}</PRE>';
 
   } else {
-    mapHTML += "// 2D matrix settings in wLED must be Horizontal starting in the TOP LEFT (NO serpentine) regardless of your actual layout.<BR><BR>";
-    mapHTML += '{"n":"matrix","map":[';
+  
+    mapHTML += '// wLED ledmap.json file.<BR>';
+    mapHTML += "// 2D matrix settings in wLED must be Horizontal starting in the TOP LEFT (NO serpentine) regardless of your actual layout.<BR>";
+    mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
+    mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
+    mapHTML += '{"n":"matrix","map":[<BR>';
       for (x = 0; x < num_leds; x++) {
-        mapHTML += pad('', pixelarray[ledindex][2], true);
+        mapHTML += pad('   ', pixelarray[ledindex][2], true);
         ledindex++;
         if (ledindex < num_leds) mapHTML += ",";
+        if ((x+1) % xdim === 0) mapHTML += '<BR>';
       }
+    mapHTML += ']}</PRE>';
   }
-  mapHTML += ']}</PRE>';
 
   mapDiv.innerHTML = mapHTML;
 }
