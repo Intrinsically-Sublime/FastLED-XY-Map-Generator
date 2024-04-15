@@ -6,7 +6,9 @@ function clearTest() {
   num = 0;
 }
 
+var gaps = 1;
 var wled = 0;
+var fastled = 0;
 var num_leds = 0;
 var xdim = 0;
 var ydim = 0;
@@ -24,16 +26,34 @@ var wiringVFlip = "top";
 var wiringHFlip = "left";
 var cylindrical = 0;
 
+function gapOutput(event) {
+  if (event.checked) {
+    gaps = 1;
+    wled = 0;
+    fastled = 0;
+    renumberLEDs();
+    printMap();
+  }
+}
+
 function wLedOutput(event) {
   if (event.checked) {
+    gaps = 0;
     wled = 1;
-  } else {
-    wled = 0;
+    fastled = 0;
+    renumberLEDs();
+    printMap();
   }
+}
 
-  renumberLEDs();
-  drawArrows();
-  printMap();
+function fastLEDOutput(event) {
+    if (event.checked) {
+    gaps = 0;
+    wled = 0;
+    fastled = 1;
+    renumberLEDs();
+    printMap();
+  }
 }
 
 function serpentineLayout(event) {
@@ -133,7 +153,9 @@ function verticalLayout(event) {
 }
 
 function buildArray(num_leds) {
+  gaps = (document.getElementById("gapCHK")).checked;
   wled = (document.getElementById("wLedCHK")).checked;
+  fastled = (document.getElementById("fastCHK")).checked;
   serpentine = (document.getElementById("serpentineCHK")).checked;
   vertical = (document.getElementById("verticalCHK")).checked;
   hflip = (document.getElementById("hflipCHK")).checked;
@@ -332,11 +354,16 @@ function renumberLEDs() {
 
         pixelarray[ledpos][1] = tdir;
         if (pixelarray[ledpos][0] == "E") {
-            pixelarray[ledpos][2] = activeLEDs;
-            activeLEDs++;
+            if (gaps == 1) {
+              pixelarray[ledpos][2] = 1;
+              activeLEDs++;
+            } else {
+              pixelarray[ledpos][2] = activeLEDs;
+              activeLEDs++;
+            }
         } else {
           if (pixelarray[ledpos][0] == "D" ) {
-            if (wled == 1 && discardP == 1) {
+            if (wled == 1 || gaps == 1) {
               pixelarray[ledpos][2] = -1;
             } else {
               pixelarray[ledpos][2] = inactiveLEDs;
@@ -380,7 +407,7 @@ function printMap() {
   mapHTML = "";
   ledindex = 0;
   mapHTML += '<PRE>';
-  if (wled == 0) {
+  if (fastled == 1) {
     if (discardP == 1) {
       mapHTML += '// XY mapping function discarding unchecked pixel data.<BR>';
       mapHTML += '// Requires ' + (numleds * 3) + ' Bytes\'s of SRAM';
@@ -471,13 +498,13 @@ function printMap() {
     mapHTML += '	return XYTable[(y * MATRIX_WIDTH) + x];<BR>';
     mapHTML += '}</PRE>';
 
-  } else {
+  } else if (wled == 1) {
   
     mapHTML += '// wLED ledmap.json file.<BR>';
     mapHTML += "// 2D matrix settings in wLED must be Horizontal starting in the TOP LEFT (NO serpentine) regardless of your actual layout.<BR>";
     mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
     mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
-    mapHTML += '// DO NOT COPY THE COMMENTS. Only copy the array below including the outer braces{} <BR><BR>';
+    mapHTML += '// DO NOT COPY THE COMMENTS. Only copy the array below (including the outer braces{}) <BR><BR>';
     mapHTML += '{"n":"matrix","map":[<BR>';
       for (x = 0; x < num_leds; x++) {
         mapHTML += pad('   ', pixelarray[ledindex][2], true);
@@ -486,6 +513,21 @@ function printMap() {
         if ((x+1) % xdim === 0) mapHTML += '<BR>';
       }
     mapHTML += ']}</PRE>';
+    
+  } else {
+  
+    mapHTML += '// wLED 2d-gaps.json file.<BR>';
+    mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
+    mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
+    mapHTML += '// DO NOT COPY THE COMMENTS. Only copy the array below (including the brackets[])<BR><BR>';
+    mapHTML += '[<BR>';
+      for (x = 0; x < num_leds; x++) {
+        mapHTML += pad('  ', pixelarray[ledindex][2], true);
+        ledindex++;
+        if (ledindex < num_leds) mapHTML += ",";
+        if ((x+1) % xdim === 0) mapHTML += '<BR>';
+      }
+    mapHTML += ']</PRE>';
   }
 
   mapDiv.innerHTML = mapHTML;

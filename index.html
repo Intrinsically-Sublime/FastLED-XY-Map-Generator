@@ -15,9 +15,10 @@
     <p>Code: <a href="https://github.com/Intrinsically-Sublime/FastLED-XY-Map-Generator">https://github.com/Intrinsically-Sublime/FastLED-XY-Map-Generator</a></p>
     <p>Set the maximum x and y dimensions, layout style (how the LEDs are actually wired), and click Rebuild.<br>
     Then click LEDs to edit the shape of the array by enabling and disabling pixels. The code is updated in realtime.<br>
-    For FastLED copy the resulting function and paste into your code.<br>
-    For wLED copy the resulting code into an "ledmap.json" file and upload it to your device via http://yourdeviceip/edit<br>
     You have the option to preserve all the pixel data for the unchecked pixels or discard it to save memory and increase frame rate.</p>
+    For wLED 2d-gaps.json copy the resulting code into a "2d-gaps.json" file and upload it to your device via the webapp Settings/2D Configuration/upload<br>
+    For wLED ledmap.json copy the resulting code into an "ledmap.json" file and upload it to your device via http://yourdeviceip/edit (does not work in AP mode)<br>
+    For FastLED copy the resulting function and paste into your code.<br>
     <h3>The following only applies to FastLED</h3>
     <p>Creates a function to map ordinary X-Y coordinates to the irregular array.<br>
     Calculate SRAM used by the CRGB leds array.<br>
@@ -25,18 +26,27 @@
     Add function to wrap pixels around at ends for cylindrical matrices.</p>
     
     <div class="controls">
-      <h3>Controls</h3>
-      <input type="checkbox" id="wLedCHK" onchange="wLedOutput(this)" >wLED Output</input><br>
-      <input type="checkbox" id="serpentineCHK" onchange="serpentineLayout(this)" checked>Serpentine</input><br>
-      <input type="checkbox" id="verticalCHK" onchange="verticalLayout(this)">Vertical</input><br>
-      <input type="checkbox" id="vflipCHK" onchange="vflipLayout(this)">V-Flip</input>
-      <input type="checkbox" id="hflipCHK" onchange="hflipLayout(this)">H-Flip</input><br>
-      <input type="checkbox" id="discardCHK" onchange="discardPixels(this)">Discard unchecked pixel data</input><br>
+      <form>
+      <h3>Output Mode</h3>
+        <input type="radio" checked id="gapCHK" name="outputMode" onchange="gapOutput(this)">
+        <label for="gapCHK">wLED 2d-gaps.json</label><br>
+        <input type="radio" id="wLedCHK" name="outputMode" onchange="wLedOutput(this)">
+        <label for="wLedCHK">wLED ledmap.json</label><br>
+        <input type="radio" id="fastCHK" name="outputMode" onchange="fastLEDOutput(this)">
+        <label for="gapCHK">FastLED config</label><br>
+      </form>
+      <h3>Array</h3>
       <input type="checkbox" id="clearAllCHK" onchange="clearAllPixels(this)">Start with all pixels unchecked</input><br>
       <div class="inputBox"><input id="xdim" type="number" name="xdim" min="1" value="16"/><label class="inputText">Matrix Width</label></div>
       <div class="inputBox"><input id="ydim" type="number" name="ydim" min="1" value="5"/><label class="inputText">Matrix Height</label></div>
       <button id="rebuildArray" onclick="buildGrid()">Rebuild</button>
+      <h3>Options</h3>
+      <input type="checkbox" id="serpentineCHK" onchange="serpentineLayout(this)" checked>Serpentine</input><br>
+      <input type="checkbox" id="verticalCHK" onchange="verticalLayout(this)">Vertical</input><br>
+      <input type="checkbox" id="vflipCHK" onchange="vflipLayout(this)">V-Flip</input>
+      <input type="checkbox" id="hflipCHK" onchange="hflipLayout(this)">H-Flip</input><br>
       <h3>FastLED Options</h3>
+      <input type="checkbox" id="discardCHK" onchange="discardPixels(this)">Discard unchecked pixel data</input><br>
       <input type="checkbox" id="cylinderCHK" onchange="cylinderMatrix(this)">Wrap pixels at ends</input><br>
       <div class="inputBox"><input id="poutBOX" onchange="parallelOut(this)" type="number" name="poutBOX" min="1" max="16" value="1"/><label class="inputText">Parallel Outputs</label></div>
     </div>
