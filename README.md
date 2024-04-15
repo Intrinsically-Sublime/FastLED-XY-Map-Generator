@@ -1,5 +1,10 @@
-# FastLED-XY-Map-Generator
-Automatically generates XYmap function for irregular/gapped LED arrays.
+# LED-XY-Map-Generator
+Generates XYmap function for irregular/gapped LED arrays for FastLED.
+Generates map array for wLED.
+
+Changes from my previous version:
+1) Add wLED array output.
+   * 2D matrix settings in wLED must be Horizontal starting in the TOP LEFT (NO serpentine) regardless of your actual layout.
 
 Changes from original:
 1) Uses define instead of const int for Matrix size assignment and change variable name.
