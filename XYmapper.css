@@ -151,6 +151,12 @@
   float:none;
 }
 
+#infoOut {
+  background: black;
+  color: lime;
+  padding: 1em;
+}
+
 #result {
   background: black;
   color: lime;

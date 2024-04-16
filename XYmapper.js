@@ -407,12 +407,11 @@ function printMap() {
 
   var numleds = visibleLEDs + 1;
   var frameRate = (((1000 / ((numleds * 30) / 1000)) - 0.5) * pout).toFixed(0);
-
-  mapDiv = document.getElementById("result");
+  
+  mapDiv = document.getElementById("infoOut");
 
   mapHTML = "";
-  ledindex = 0;
-  mapHTML += '<PRE>';
+  mapHTML += '<PRE>';  
   if (fastled == 1) {
     if (discardP == 1) {
       mapHTML += '// XY mapping function discarding unchecked pixel data.<BR>';
@@ -433,14 +432,33 @@ function printMap() {
     } else {
       mapHTML += '// Maximum frame rate for WS2811 based LEDs = ' + frameRate + ' FPS using 1 output.<BR>';
     }
-  
     if (wrapX == 1) {
       mapHTML += '// Cylindrical wrapping enabled.<BR>';
     }
-  
+    mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.';
+  } else if (wled == 1) {
+    mapHTML += '// wLED ledmap.json file.<BR>';
+    mapHTML += "// 2D matrix settings in wLED must be Horizontal starting in the TOP LEFT (NO serpentine) regardless of your actual layout.<BR>";
     mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
-  
-    mapHTML += '<BR>// Parameters for width and height<BR>';
+    mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
+    mapHTML += '// Copy the entire array below, including the outer braces{}';
+  } else {
+    mapHTML += '// wLED 2d-gaps.json file.<BR>';
+    mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
+    mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
+    mapHTML += '// Copy the entire array below, including the brackets[]';
+  }
+  mapHTML += '</PRE>';
+
+  mapDiv.innerHTML = mapHTML;
+
+  mapDiv = document.getElementById("result");
+
+  mapHTML = "";
+  ledindex = 0;
+  mapHTML += '<PRE>';
+  if (fastled == 1) {
+    mapHTML += '// Parameters for width and height<BR>';
     mapHTML += '#define MATRIX_WIDTH ' + xdim + '<BR>';
     mapHTML += '#define MATRIX_HEIGHT ' + ydim + '<BR><BR>';
   
@@ -505,12 +523,6 @@ function printMap() {
     mapHTML += '}</PRE>';
 
   } else if (wled == 1) {
-  
-    mapHTML += '// wLED ledmap.json file.<BR>';
-    mapHTML += "// 2D matrix settings in wLED must be Horizontal starting in the TOP LEFT (NO serpentine) regardless of your actual layout.<BR>";
-    mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
-    mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
-    mapHTML += '// DO NOT COPY THE COMMENTS. Only copy the array below (including the outer braces{}) <BR><BR>';
     mapHTML += '{"n":"matrix","map":[<BR>';
       for (x = 0; x < num_leds; x++) {
         mapHTML += pad('   ', pixelarray[ledindex][2], true);
@@ -521,11 +533,6 @@ function printMap() {
     mapHTML += ']}</PRE>';
     
   } else {
-  
-    mapHTML += '// wLED 2d-gaps.json file.<BR>';
-    mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
-    mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
-    mapHTML += '// DO NOT COPY THE COMMENTS. Only copy the array below (including the brackets[])<BR><BR>';
     mapHTML += '[<BR>';
       for (x = 0; x < num_leds; x++) {
         mapHTML += pad('  ', pixelarray[ledindex][2], true);
