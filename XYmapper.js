@@ -132,7 +132,6 @@ function clearAllPixels(event) {
     clearAll = 0;
   }
 
-  buildGrid();
   renumberLEDs();
   drawArrows();
   printMap();
@@ -364,7 +363,14 @@ function renumberLEDs() {
         } else {
           if (pixelarray[ledpos][0] == "D" ) {
             if (wled == 1 || gaps == 1) {
-              pixelarray[ledpos][2] = -1;
+              if (gaps == 1 && discardP == 0) {
+                pixelarray[ledpos][2] = 0;
+              } else if (discardP == 1) {
+                pixelarray[ledpos][2] = -1;
+              } else {
+                pixelarray[ledpos][2] = inactiveLEDs;
+                inactiveLEDs++;
+              }
             } else {
               pixelarray[ledpos][2] = inactiveLEDs;
               inactiveLEDs++;
