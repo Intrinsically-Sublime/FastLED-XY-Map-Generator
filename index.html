@@ -47,7 +47,9 @@
         <ul>
           <label><b>WLED 2d-gaps.json</b></label>
             <li><input type="radio" checked id="gapCHK" name="outputMode" onchange="gapOutput(this)">
-            <label for="gapCHK">Normal</label><br><br>
+            <label for="gapCHK">Normal</label>
+            <input type="radio" id="triCHK" name="outputMode" onchange="triOutput(this)">
+            <label for="triCHK">Tri-State</label><br><br>
           <label><b>WLED ledmap.json</b></label>
             <li><input type="radio" id="wLedCHK" name="outputMode" onchange="wLedOutput(this)">
             <label for="wLedCHK">Normal</label>

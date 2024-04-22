@@ -6,6 +6,7 @@ function clearTest() {
   num = 0;
 }
 
+var triState = 0;
 var led2grid = 0;
 var freeStyle = 0;
 var gaps = 1;
@@ -30,6 +31,19 @@ var cylindrical = 0;
 var freestyleCounter = 0;
 var lastFreestyle = 0;
 
+function triOutput(event) {
+  if (event.checked) {
+    triState = 1;
+    freeStyle = 0;
+    gaps = 0;
+    wled = 0;
+    fastled = 0;
+    renumberLEDs();
+    drawArrows();
+    printMap();
+  }
+}
+
 function wledMapA(event) {
   if (event.checked) {
     led2grid = 0;
@@ -50,6 +64,7 @@ function wledMapB(event) {
 
 function freeOutput(event) {
   if (event.checked) {
+    triState = 0;
     freeStyle = 1;
     gaps = 0;
     wled = 0;
@@ -62,6 +77,7 @@ function freeOutput(event) {
 
 function gapOutput(event) {
   if (event.checked) {
+    triState = 0;
     freeStyle = 0;
     gaps = 1;
     wled = 0;
@@ -73,6 +89,7 @@ function gapOutput(event) {
 
 function wLedOutput(event) {
   if (event.checked) {
+    triState = 0;
     freeStyle = 0;
     gaps = 0;
     wled = 1;
@@ -84,6 +101,7 @@ function wLedOutput(event) {
 
 function fastLEDOutput(event) {
     if (event.checked) {
+    triState = 0;
     freeStyle = 0;
     gaps = 0;
     wled = 0;
@@ -189,6 +207,7 @@ function verticalLayout(event) {
 }
 
 function buildArray(num_leds) {
+  triState = (document.getElementById("triCHK")).checked;
   freeStyle = (document.getElementById("freeCHK")).checked;
   gaps = (document.getElementById("gapCHK")).checked;
   wled = (document.getElementById("wLedCHK")).checked;
@@ -205,9 +224,9 @@ function buildArray(num_leds) {
   for (i = 0; i < num_leds; i++) {
     pixelarray[i] = [];
     if (clearAll == 1) {
-      pixelarray[i][0] = "D";	// E = Enable, D = Disable
+      pixelarray[i][0] = "D";	// E = Enable, D = Disable, H = Hidden
     } else {
-      pixelarray[i][0] = "E";	// E = Enable, D = Disable
+      pixelarray[i][0] = "E";	// E = Enable, D = Disable, H = Hidden
     }
     pixelarray[i][1] = "N";	// N = No Arrow, R = Right, L = Left, D = Down, U = Up
     pixelarray[i][2] = 0;	  // LED Index number
@@ -304,14 +323,22 @@ function clearButton(event) {
       clearArrows(event);
     }
   } else if (pixelarray[eventindex][0] == "D") {
-    event.className = "ledpixel";
-    pixelarray[eventindex][0] = "E";
-    drawArrows();
+    if (triState == 1) {
+      event.className = "disabledPixel";
+      pixelarray[eventindex][0] = "H";
+    } else {
+      event.className = "ledpixel";
+      pixelarray[eventindex][0] = "E";
+    }
     if (freeStyle == 1) {
       pixelarray[eventindex][3] = freestyleCounter;
       lastFreestyle = freestyleCounter;
       freestyleCounter++;
     }
+  } else if (pixelarray[eventindex][0] == "H") {
+    event.className = "ledpixel";
+    pixelarray[eventindex][0] = "E";
+    drawArrows();
   }
 
   renumberLEDs();
@@ -325,7 +352,7 @@ function clearContents(element) {
 function drawArrows() {
   for (i = 0; i < num_leds; i++) {
     pixelID = "pixel" + i;
-    if (pixelarray[i][0] == "E" && freeStyle != 1 && gaps != 1) {
+    if (pixelarray[i][0] == "E" && freeStyle != 1 && gaps != 1 && triState != 1) {
       pixelElement = document.getElementById(pixelID);
       clearArrows(pixelElement);
 
@@ -408,7 +435,7 @@ function renumberLEDs() {
 
         pixelarray[ledpos][1] = tdir;
         if (pixelarray[ledpos][0] == "E") {
-            if (gaps == 1) {
+            if (gaps == 1 || triState == 1) {
               pixelarray[ledpos][2] = 1;
               activeLEDs++;
             } else if (freeStyle == 1) {
@@ -418,11 +445,11 @@ function renumberLEDs() {
               activeLEDs++;
             }
         } else {
-          if (pixelarray[ledpos][0] == "D" ) {
-            if (wled == 1 || gaps == 1 || freeStyle == 1) {
-              if (gaps == 1 && discardP == 0) {
+          if (pixelarray[ledpos][0] == "D" || pixelarray[ledpos][0] == "H" ) {
+            if (wled == 1 || gaps == 1 || freeStyle == 1 || triState == 1) {
+              if ((gaps == 1 && discardP == 0) || (triState == 1 && pixelarray[ledpos][0] == "H")) {
                 pixelarray[ledpos][2] = 0;
-              } else if (discardP == 1 || freeStyle == 1) {
+              } else if (freeStyle == 1 || discardP == 1 || triState == 1) {
                 pixelarray[ledpos][2] = -1;
               } else {
                 pixelarray[ledpos][2] = inactiveLEDs;
