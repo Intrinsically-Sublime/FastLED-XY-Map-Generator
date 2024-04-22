@@ -473,7 +473,7 @@ function printMap() {
     mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.';
   } else if (wled == 1) {
     mapHTML += '// wLED ledmap.json file.<BR>';
-    mapHTML += "// 2D matrix settings in wLED must be Horizontal starting in the TOP LEFT (NO serpentine) regardless of your actual layout.<BR>";
+    mapHTML += "// 2D matrix settings in wLED must be Horizontal starting in the TOP LEFT HORIZONTAL(NO serpentine) regardless of your actual layout.<BR>";
     mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
     mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
     mapHTML += '// Copy the entire array below, including the outer braces{}';
