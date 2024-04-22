@@ -6,6 +6,7 @@ function clearTest() {
   num = 0;
 }
 
+var freeStyle = 0;
 var gaps = 1;
 var wled = 0;
 var fastled = 0;
@@ -25,9 +26,24 @@ var wiringVert = "horizontal";
 var wiringVFlip = "top";
 var wiringHFlip = "left";
 var cylindrical = 0;
+var freestyleCounter = 0;
+var lastFreestyle = 0;
+
+function freeOutput(event) {
+  if (event.checked) {
+    freeStyle = 1;
+    gaps = 0;
+    wled = 0;
+    fastled = 0;
+    renumberLEDs();
+    drawArrows();
+    printMap();
+  }
+}
 
 function gapOutput(event) {
   if (event.checked) {
+    freeStyle = 0;
     gaps = 1;
     wled = 0;
     fastled = 0;
@@ -38,6 +54,7 @@ function gapOutput(event) {
 
 function wLedOutput(event) {
   if (event.checked) {
+    freeStyle = 0;
     gaps = 0;
     wled = 1;
     fastled = 0;
@@ -48,6 +65,7 @@ function wLedOutput(event) {
 
 function fastLEDOutput(event) {
     if (event.checked) {
+    freeStyle = 0;
     gaps = 0;
     wled = 0;
     fastled = 1;
@@ -152,6 +170,7 @@ function verticalLayout(event) {
 }
 
 function buildArray(num_leds) {
+  freeStyle = (document.getElementById("freeCHK")).checked;
   gaps = (document.getElementById("gapCHK")).checked;
   wled = (document.getElementById("wLedCHK")).checked;
   fastled = (document.getElementById("fastCHK")).checked;
@@ -250,13 +269,27 @@ function clearArrows(element) {
 function clearButton(event) {
   eventindex = parseInt((event.id).replace(/[^0-9\.]/g, ''), 10);
   if (pixelarray[eventindex][0] == "E") {
-    event.className = "disabledPixel";
-    pixelarray[eventindex][0] = "D";
-    clearArrows(event);
+    if (freeStyle == 1 && pixelarray[eventindex][3] == lastFreestyle) {
+      pixelarray[eventindex][3] = -1;
+      lastFreestyle = lastFreestyle - 1;
+      freestyleCounter--;
+      event.className = "disabledPixel";
+      pixelarray[eventindex][0] = "D";
+      clearArrows(event);
+    } else if (freeStyle == 0) {
+      event.className = "disabledPixel";
+      pixelarray[eventindex][0] = "D";
+      clearArrows(event);
+    }
   } else if (pixelarray[eventindex][0] == "D") {
     event.className = "ledpixel";
     pixelarray[eventindex][0] = "E";
     drawArrows();
+    if (freeStyle == 1) {
+      pixelarray[eventindex][3] = freestyleCounter;
+      lastFreestyle = freestyleCounter;
+      freestyleCounter++;
+    }
   }
 
   renumberLEDs();
@@ -270,7 +303,7 @@ function clearContents(element) {
 function drawArrows() {
   for (i = 0; i < num_leds; i++) {
     pixelID = "pixel" + i;
-    if (pixelarray[i][0] == "E") {
+    if (pixelarray[i][0] == "E" && freeStyle != 1) {
       pixelElement = document.getElementById(pixelID);
       clearArrows(pixelElement);
 
@@ -356,16 +389,18 @@ function renumberLEDs() {
             if (gaps == 1) {
               pixelarray[ledpos][2] = 1;
               activeLEDs++;
+            } else if (freeStyle == 1) {
+              pixelarray[ledpos][2] = pixelarray[ledpos][3];
             } else {
               pixelarray[ledpos][2] = activeLEDs;
               activeLEDs++;
             }
         } else {
           if (pixelarray[ledpos][0] == "D" ) {
-            if (wled == 1 || gaps == 1) {
+            if (wled == 1 || gaps == 1 || freeStyle == 1) {
               if (gaps == 1 && discardP == 0) {
                 pixelarray[ledpos][2] = 0;
-              } else if (discardP == 1) {
+              } else if (discardP == 1 || freeStyle == 1) {
                 pixelarray[ledpos][2] = -1;
               } else {
                 pixelarray[ledpos][2] = inactiveLEDs;
@@ -444,7 +479,11 @@ function printMap() {
     mapHTML += '// Copy the entire array below, including the outer braces{}';
   } else {
     mapHTML += '// wLED 2d-gaps.json file.<BR>';
-    mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
+    if (freeStyle == 1) {
+      mapHTML += '// Wired freestyle following the order clicked.<BR>';
+    } else {
+      mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
+    }
     mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
     mapHTML += '// Copy the entire array below, including the brackets[]';
   }
@@ -522,10 +561,18 @@ function printMap() {
     mapHTML += '	return XYTable[(y * MATRIX_WIDTH) + x];<BR>';
     mapHTML += '}</PRE>';
 
-  } else if (wled == 1) {
+  } else if (wled == 1 || freeStyle == 1) {
     mapHTML += '{"n":"matrix","map":[<BR>';
       for (x = 0; x < num_leds; x++) {
-        mapHTML += pad('   ', pixelarray[ledindex][2], true);
+        if (freeStyle == 1) {
+          if (pixelarray[ledindex][3] >= 0) {
+            mapHTML += pad('   ', pixelarray[ledindex][3], true);
+          } else {
+            mapHTML += pad('   ', -1, true);
+          }
+        } else {
+          mapHTML += pad('   ', pixelarray[ledindex][2], true);
+        }
         ledindex++;
         if (ledindex < num_leds) mapHTML += ",";
         if ((x+1) % xdim === 0) mapHTML += '<BR>';

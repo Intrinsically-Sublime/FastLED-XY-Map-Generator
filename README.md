@@ -11,6 +11,7 @@ Changes from my previous version:
 1) Add wLED ledmap.json output.
    * 2D matrix settings in wLED must be Horizontal starting in the TOP LEFT (NO serpentine) regardless of your actual layout.
 2) Add wLED 2d-gaps.json output.
+3) Add wLED freestyle ledmap.json option. You must start with an empty array.
 
 Changes from original:
 1) Uses define instead of const int for Matrix size assignment and change variable name.

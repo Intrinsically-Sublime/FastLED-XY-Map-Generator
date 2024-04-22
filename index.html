@@ -10,23 +10,30 @@
   </head>
   <body>
     <h1>FastLED and wLED XY Map Generator</h1>
-    <p><b>Modified by Intrinsically-Sublime</b></p>
+    <p><b>Modified by Intrinsically-Sublime</b> <a href="https://github.com/Intrinsically-Sublime/FastLED-XY-Map-Generator">https://github.com/Intrinsically-Sublime/FastLED-XY-Map-Generator</a></p>
     <p>Originally created by Garrett Mace (macetech.com), inspired by Mark Kriegsman</p>
-    <p>Code: <a href="https://github.com/Intrinsically-Sublime/FastLED-XY-Map-Generator">https://github.com/Intrinsically-Sublime/FastLED-XY-Map-Generator</a></p>
+    <p></p>
     
     <h3>Usage</h3>
-    Configure the array by setting the maximum x and y dimensions and click Rebuild.<br>
-    All other options update in realtime.<br>
-    Then click LEDs to edit the shape of the array by enabling and disabling pixels.<br>
-    <br>
-    For wLED 2d-gaps.json copy the resulting code into a "2d-gaps.json" file and upload it to your device via the webapp Settings/2D Configuration/upload<br>
-    For wLED ledmap.json copy the resulting code into an "ledmap.json" file and upload it to your device via http://yourdeviceip/edit (does not work in AP mode)<br>
-    For FastLED copy the resulting function and paste into your code.<br>
-    <h3>The following only applies to FastLED</h3>
-    Creates a function to map ordinary X-Y coordinates to the irregular array.<br>
-    Calculate SRAM used by the CRGB leds array.<br>
-    Calculate maximum frame rate for WS2811 based LEDs (WS2811, WS2812/B, WS2813, SK6812, SK6822, etc) using parallel output.<br>
-    Add function to wrap pixels around at ends for cylindrical matrices.
+    <ol>
+      <li>Configure the array by setting the maximum x and y dimensions and click Rebuild.
+      <li>Click the LEDs to edit the shape of the array by enabling and disabling pixels.<br>
+      ***For wLED freestyle mode you must build the array empty to start.<br>
+      All other options update in realtime.
+      <li>Copy the resulting code to the correct location.
+      <ul>
+        <li>For wLED 2d-gaps.json copy the resulting code into a "2d-gaps.json" file and upload it to your device via the webapp Settings/2D Configuration/upload
+        <li>For wLED ledmap.json copy the resulting code into an "ledmap.json" file and upload it to your device via http://yourdeviceip/edit (does not work in AP mode)
+        <li>For FastLED copy the resulting function and paste into your code.
+      </ul>
+    </ol>
+    <h4>FastLED only features</h4>
+    <ul>
+      <li>Creates a function to map ordinary X-Y coordinates to the irregular array.<br>
+      <li>Calculate SRAM used by the CRGB leds array.<br>
+      <li>Calculate maximum frame rate for WS2811 based LEDs (WS2811, WS2812/B, WS2813, SK6812, SK6822, etc) using parallel output.<br>
+      <li>Adds a function to wrap pixels around at ends for cylindrical matrices.
+    </ul>
     
     <div class="controls">
       <h3>Array</h3>
@@ -39,7 +46,9 @@
         <input type="radio" checked id="gapCHK" name="outputMode" onchange="gapOutput(this)">
         <label for="gapCHK">wLED 2d-gaps.json</label>
         <input type="radio" id="wLedCHK" name="outputMode" onchange="wLedOutput(this)">
-        <label for="wLedCHK">wLED ledmap.json</label>
+        <label for="wLedCHK">wLED ledmap.json</label><br>
+        <input type="radio" id="freeCHK" name="outputMode" onchange="freeOutput(this)">
+        <label for="freeCHK">wLED freestyle ledmap.json ***Experimental</label><br>
         <input type="radio" id="fastCHK" name="outputMode" onchange="fastLEDOutput(this)">
         <label for="gapCHK">FastLED config</label><br>
       </form>
