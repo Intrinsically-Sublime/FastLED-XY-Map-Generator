@@ -11,6 +11,19 @@
   background-size: 100% 100%;
 }
 
+.hiddenPixel {
+  display:table-cell;
+  position: relative;
+  margin: 0em;
+  border:1px solid gray;
+  min-width: 3em;
+  height: 3em;
+  text-align: right;
+  vertical-align: bottom;
+  background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url("ws2812.png");
+  background-size: 100% 100%;
+}
+
 .disabledPixel {
   display:table-cell;
   position: relative;

@@ -323,13 +323,18 @@ function clearButton(event) {
       pixelarray[eventindex][0] = "D";
       clearArrows(event);
     } else if (freeStyle == 0) {
-      event.className = "disabledPixel";
-      pixelarray[eventindex][0] = "D";
+      if (discardP == 1) {
+        event.className = "disabledPixel";
+        pixelarray[eventindex][0] = "D";
+      } else {
+        event.className = "hiddenPixel";
+        pixelarray[eventindex][0] = "H";
+      }
       clearArrows(event);
     }
   } else if (pixelarray[eventindex][0] == "D") {
     if (triState == 1) {
-      event.className = "disabledPixel";
+      event.className = "hiddenPixel";
       pixelarray[eventindex][0] = "H";
     } else {
       event.className = "ledpixel";
