@@ -84,67 +84,38 @@
   font-family: sans-serif;
 }
 
-.triangle-left {
-  position:absolute;
-  top: 0;
-  right:0;
-  width:0;
-  height:0;
-  border-style: solid;
-  border-width: 0.5em;
-  border-color: transparent #FF0000 transparent transparent;
-}
-
-.triangle-right {
-  position:absolute;
-  top: 0;
-  left:0;
-  width:0;
-  height:0;
-  border-style: solid;
-  border-width: 0.5em;
-  border-color: transparent transparent transparent #00FF00;
-}
-
-.triangle-top {
-  position:absolute;
-  top: 0;
-  left:0;
-  width:0;
-  height:0;
-  border-style: solid;
-  border-width: 0.5em;
-  border-color: #00FF00 transparent transparent transparent;
-}
-
-.triangle-bottom {
-  position:absolute;
-  bottom: 0;
-  left:0;
-  width:0;
-  height:0;
-  border-style: solid;
-  border-width: 0.5em;
-  border-color: transparent transparent #FF0000 transparent;
-}
-
-
 .controls {
   font-size: 1em;
-  display: block;
   margin-bottom: 0.25em;
 }
+
+.optionBox {
+  float: left;
+  padding-left: 0.25em;
+}
+
+.button {
+  font-size: 1em;
+  height: 1.65em;
+  line-height: 1.5em;
+}
+
+.ledGrid {
+  clear: both;
+}
+
+.buildBox {
+  height: 1.75em;
+  line-height: 1.5em;
+}
+
 .inputBox {
   height: 1.75em;
   line-height: 1.5em;
-  width: 14em;
-  display: block;
   padding-left: 0.25em;
-  margin-top: 0.25em;
 }
 
 .inputBox input {
-  display: block;
   float:left;
   font-size: 1em;
   padding: 0; margin: 0;
@@ -154,7 +125,6 @@
 .inputText {
   display:block;
   float:left;
-  width: 9em;
   padding-left: 0.25em;
 }
 
