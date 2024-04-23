@@ -8,8 +8,8 @@
 * ledmap.json
   * Normal mode remaps the unchecked pixels in the array to -1 or the end of the array depending on the dicard pixel setting.
     * Normal mode uses all the other options
-  * Freestyle mode ignores all options and allows you to select the pixels in any order you wish.
-    * To undo a mistake you must retrace your steps backwards.
+  * ~~Freestyle mode ignores all options and allows you to select the pixels in any order you wish.~~
+    * ~~To undo a mistake you must retrace your steps backwards.~~
   * Two mapping modes available. Map the LED # to the Grid location or Map the Grid location to the LED #
     * If one doesn't work try the other?
 
@@ -25,7 +25,7 @@ Changes from my previous version:
 1) Add wLED ledmap.json output.
    * 2D matrix settings in wLED must be Horizontal starting in the TOP LEFT (NO serpentine) regardless of your actual layout.
 2) Add wLED 2d-gaps.json output.
-3) Add wLED freestyle ledmap.json option. You must start with an empty array.
+3) ~~Add wLED freestyle ledmap.json option. You must start with an empty array.~~ Disabled until it works with serpentine and the other options.
 4) Add wLED mapping mode options. Map the LED # to the Grid location or Map the Grid location to the LED #
 5) Add wLED tri-State 2d-gaps.json option.
 

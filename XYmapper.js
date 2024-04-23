@@ -7,7 +7,7 @@ function clearTest() {
 }
 
 var triState = 0;
-var led2grid = 0;
+var led2grid = 1;
 var freeStyle = 0;
 var gaps = 1;
 var wled = 0;
@@ -47,6 +47,7 @@ function triOutput(event) {
 function wledMapA(event) {
   if (event.checked) {
     led2grid = 0;
+    discardP = 0;
     renumberLEDs();
     drawArrows();
     printMap();
@@ -56,24 +57,25 @@ function wledMapA(event) {
 function wledMapB(event) {
   if (event.checked) {
     led2grid = 1;
+    discardP = 1;
     renumberLEDs();
     drawArrows();
     printMap();
   }
 }
 
-function freeOutput(event) {
-  if (event.checked) {
-    triState = 0;
-    freeStyle = 1;
-    gaps = 0;
-    wled = 0;
-    fastled = 0;
-    renumberLEDs();
-    drawArrows();
-    printMap();
-  }
-}
+//function freeOutput(event) {
+//  if (event.checked) {
+//    triState = 0;
+//    freeStyle = 1;
+//    gaps = 0;
+//    wled = 0;
+//    fastled = 0;
+//    renumberLEDs();
+//    drawArrows();
+//    printMap();
+//  }
+//}
 
 function gapOutput(event) {
   if (event.checked) {
@@ -83,6 +85,7 @@ function gapOutput(event) {
     wled = 0;
     fastled = 0;
     renumberLEDs();
+    drawArrows();
     printMap();
   }
 }
@@ -95,6 +98,7 @@ function wLedOutput(event) {
     wled = 1;
     fastled = 0;
     renumberLEDs();
+    drawArrows();
     printMap();
   }
 }
@@ -107,6 +111,7 @@ function fastLEDOutput(event) {
     wled = 0;
     fastled = 1;
     renumberLEDs();
+    drawArrows();
     printMap();
   }
 }
@@ -208,7 +213,7 @@ function verticalLayout(event) {
 
 function buildArray(num_leds) {
   triState = (document.getElementById("triCHK")).checked;
-  freeStyle = (document.getElementById("freeCHK")).checked;
+//  freeStyle = (document.getElementById("freeCHK")).checked;
   gaps = (document.getElementById("gapCHK")).checked;
   wled = (document.getElementById("wLedCHK")).checked;
   fastled = (document.getElementById("fastCHK")).checked;
@@ -414,7 +419,7 @@ function renumberLEDs() {
       var oddcols = (xdim % 2 == 1 && hflip == 1 && vertical == 1);
       var evenrows = (ydim % 2 == 0 && vflip == 1 && vertical == 0);
 
-        if ((((ty+evenrows+oddcols) % 2) == 0) || (serpentine==0)) {
+        if ((((ty+evenrows+oddcols) % 2) == 0) || (serpentine == 0)) {
           if (vertical == 0) {
             ledpos = ty*xtemp+tx;
             if (hflip == 1) tdir = "L"; else tdir = "R";
@@ -522,17 +527,19 @@ function printMap() {
     mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.';
   } else if (wled == 1) {
     mapHTML += '// wLED ledmap.json file.<BR>';
-    mapHTML += "// 2D matrix settings in wLED must be Horizontal starting in the TOP LEFT HORIZONTAL(NO serpentine) regardless of your actual layout.<BR>";
+    if (led2grid == 1) {
+      mapHTML += "// 2D matrix settings in wLED must be Horizontal starting in the TOP LEFT HORIZONTAL(NO serpentine) regardless of your actual layout.<BR>";
+    }
     mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
     mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
     mapHTML += '// Copy the entire array below, including the outer braces{}';
+  } else if (freeStyle == 1) {
+    mapHTML += '// wLED ledmap.json file.<BR>';
+    mapHTML += '// Wired freestyle following the order clicked.<BR>';
+    mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
+    mapHTML += '// Copy the entire array below, including the brackets[]';
   } else {
     mapHTML += '// wLED 2d-gaps.json file.<BR>';
-    if (freeStyle == 1) {
-      mapHTML += '// Wired freestyle following the order clicked.<BR>';
-    } else {
-      mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
-    }
     mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
     mapHTML += '// Copy the entire array below, including the brackets[]';
   }
