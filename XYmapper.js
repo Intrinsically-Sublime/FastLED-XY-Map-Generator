@@ -6,6 +6,7 @@ function clearTest() {
   num = 0;
 }
 
+var led2grid = 0;
 var freeStyle = 0;
 var gaps = 1;
 var wled = 0;
@@ -28,6 +29,24 @@ var wiringHFlip = "left";
 var cylindrical = 0;
 var freestyleCounter = 0;
 var lastFreestyle = 0;
+
+function wledMapA(event) {
+  if (event.checked) {
+    led2grid = 0;
+    renumberLEDs();
+    drawArrows();
+    printMap();
+  }
+}
+
+function wledMapB(event) {
+  if (event.checked) {
+    led2grid = 1;
+    renumberLEDs();
+    drawArrows();
+    printMap();
+  }
+}
 
 function freeOutput(event) {
   if (event.checked) {
@@ -191,13 +210,16 @@ function buildArray(num_leds) {
       pixelarray[i][0] = "E";	// E = Enable, D = Disable
     }
     pixelarray[i][1] = "N";	// N = No Arrow, R = Right, L = Left, D = Down, U = Up
-    pixelarray[i][2] = 0;	// LED Index number
+    pixelarray[i][2] = 0;	  // LED Index number
+    pixelarray[i][3] = -1;	// Click Index number
   }
 
   pixelarray.join("\",\"");
 }
 
 function buildGrid(numBoxes) {
+  freestyleCounter = 0;
+  lastFreestyle = 0;
   gridHTML = "";
   container = document.getElementById('ledgrid');
   clearContents(container);
@@ -303,7 +325,7 @@ function clearContents(element) {
 function drawArrows() {
   for (i = 0; i < num_leds; i++) {
     pixelID = "pixel" + i;
-    if (pixelarray[i][0] == "E" && freeStyle != 1) {
+    if (pixelarray[i][0] == "E" && freeStyle != 1 && gaps != 1) {
       pixelElement = document.getElementById(pixelID);
       clearArrows(pixelElement);
 
@@ -565,17 +587,50 @@ function printMap() {
     mapHTML += '{"n":"matrix","map":[<BR>';
       for (x = 0; x < num_leds; x++) {
         if (freeStyle == 1) {
-          if (pixelarray[ledindex][3] >= 0) {
-            mapHTML += pad('   ', pixelarray[ledindex][3], true);
+          if (led2grid == 1) {
+            if (pixelarray[ledindex][3] >= 0) {
+              mapHTML += pad('   ', pixelarray[ledindex][3], true);
+            } else {
+              mapHTML += pad('   ', -1, true);
+            }
+            ledindex++;
+            if (ledindex < num_leds) mapHTML += ",";
+            if ((x+1) % xdim === 0) mapHTML += '<BR>';
           } else {
-            mapHTML += pad('   ', -1, true);
-          }
+            var freeOrder = 0;
+            while (freeOrder < num_leds) {
+              if (pixelarray[freeOrder][3] == ledindex) {
+                mapHTML += pad('   ', freeOrder, true);
+                ledindex++;
+                if (ledindex < activeLEDcount) mapHTML += ",";
+                if ((x+1) % xdim === 0) mapHTML += '<BR>';
+                break;
+              } else {
+                freeOrder++;
+              }
+            } 
+          } 
         } else {
-          mapHTML += pad('   ', pixelarray[ledindex][2], true);
+          if (led2grid == 1) {
+            mapHTML += pad('  ', pixelarray[ledindex][2], true);
+            ledindex++;
+            if (ledindex < num_leds) mapHTML += ",";
+            if ((x+1) % xdim === 0) mapHTML += '<BR>';
+          } else {
+            var outOrder = 0;
+            while (outOrder < num_leds) {
+              if (pixelarray[outOrder][2] == ledindex && ledindex <= activeLEDcount) {
+                mapHTML += pad('   ', outOrder, true);
+                ledindex++;
+                if (ledindex < activeLEDcount) mapHTML += ",";
+                if ((x+1) % xdim === 0) mapHTML += '<BR>';
+                break;
+              } else {
+                outOrder++;
+              }
+            }
+          }
         }
-        ledindex++;
-        if (ledindex < num_leds) mapHTML += ",";
-        if ((x+1) % xdim === 0) mapHTML += '<BR>';
       }
     mapHTML += ']}</PRE>';
     

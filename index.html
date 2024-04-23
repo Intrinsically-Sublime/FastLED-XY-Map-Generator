@@ -18,8 +18,8 @@
     <ol>
       <li>Configure the array by setting the maximum x and y dimensions and click Rebuild.
       <li>Click the LEDs to edit the shape of the array by enabling and disabling pixels.<br>
-      **For wLED 2D-maps.json you must set the array in WLED 2d settings top left horizontal (not serpentine) regardless of your actual layout.<br>
-      ***For wLED freestyle mode you must build the array empty to start.<br>
+      *For wLED freestyle mode you must start with all pixels unchecked.<br>
+      **For wLED 2D-maps.json in "Map LED # to grid #" mode you must set the array in WLED 2d settings top left horizontal (not serpentine) regardless of your actual layout.<br>
       All other options update in realtime.
       <li>Copy the resulting code to the correct location.
       <ul>
@@ -43,25 +43,33 @@
       <div class="inputBox"><input id="ydim" type="number" name="ydim" min="1" value="5"/><label class="inputText">Matrix Height</label></div>
       <button id="rebuildArray" onclick="buildGrid()">Rebuild</button>
       <form>
-        <h3>Output Mode</h3>
-        <input type="radio" checked id="gapCHK" name="outputMode" onchange="gapOutput(this)">
-        <label for="gapCHK">wLED 2d-gaps.json</label>
-        <input type="radio" id="wLedCHK" name="outputMode" onchange="wLedOutput(this)">
-        <label for="wLedCHK">wLED ledmap.json</label><br>
-        <input type="radio" id="freeCHK" name="outputMode" onchange="freeOutput(this)">
-        <label for="freeCHK">wLED freestyle ledmap.json ***Experimental</label><br>
-        <input type="radio" id="fastCHK" name="outputMode" onchange="fastLEDOutput(this)">
-        <label for="gapCHK">FastLED config</label><br>
+        <h3>Mode</h3>
+        <ul>
+          <label><b>WLED 2d-gaps.json</b></label>
+            <li><input type="radio" checked id="gapCHK" name="outputMode" onchange="gapOutput(this)">
+            <label for="gapCHK">Normal</label><br><br>
+          <label><b>WLED ledmap.json</b></label>
+            <li><input type="radio" id="wLedCHK" name="outputMode" onchange="wLedOutput(this)">
+            <label for="wLedCHK">Normal</label>
+            <input type="radio" id="freeCHK" name="outputMode" onchange="freeOutput(this)">
+            <label for="freeCHK">Freestyle <b>*</b></label><br><br>
+            <input type="radio" checked id="AmapCHK" name="mapMode" onchange="wledMapA(this)">
+            <label for="AmapCHK">Map grid # to LED #</label><br>
+            <input type="radio" id="BmapCHK" name="mapMode" onchange="wledMapB(this)">
+            <label for="BmapCHK">Map LED # to grid # <b>**</b></label><br><br>
+          <label><b>FastLED config</b></label>
+            <li><input type="radio" id="fastCHK" name="outputMode" onchange="fastLEDOutput(this)">
+            <label for="gapCHK">FastLED config</label><br><br>
+            <input type="checkbox" id="cylinderCHK" onchange="cylinderMatrix(this)">Wrap pixels at ends</input><br>
+            <div class="inputBox"><input id="poutBOX" onchange="parallelOut(this)" type="number" name="poutBOX" min="1" max="16" value="1"/><label class="inputText">Parallel Outputs</label></div>
+        </ul>
       </form>
       <h3>Options</h3>
-      <input type="checkbox" id="serpentineCHK" onchange="serpentineLayout(this)" checked>Serpentine</input><br>
+      <input type="checkbox" id="serpentineCHK" onchange="serpentineLayout(this)">Serpentine</input><br>
       <input type="checkbox" id="verticalCHK" onchange="verticalLayout(this)">Vertical</input><br>
       <input type="checkbox" id="vflipCHK" onchange="vflipLayout(this)">V-Flip</input>
       <input type="checkbox" id="hflipCHK" onchange="hflipLayout(this)">H-Flip</input><br>
       <input type="checkbox" id="discardCHK" onchange="discardPixels(this)">Discard unchecked pixels</input><br>
-      <h3>FastLED Options</h3>
-      <input type="checkbox" id="cylinderCHK" onchange="cylinderMatrix(this)">Wrap pixels at ends</input><br>
-      <div class="inputBox"><input id="poutBOX" onchange="parallelOut(this)" type="number" name="poutBOX" min="1" max="16" value="1"/><label class="inputText">Parallel Outputs</label></div>
     </div>
 
     <div id="ledgrid"></div>
