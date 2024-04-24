@@ -2,82 +2,90 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>FastLED and wLED XY Map Generator</title>
+    <title>FastLED XY Map Generator</title>
     <link rel="stylesheet" type="text/css" href="XYmapper.css">
 
     <script src="XYmapper.js"></script>
 
   </head>
   <body>
-    <h1>WLED and FastLED XY Map Generator</h1>
-    <p><b>Modified by Intrinsically-Sublime</b> <a href="https://github.com/Intrinsically-Sublime/FastLED-XY-Map-Generator">https://github.com/Intrinsically-Sublime/FastLED-XY-Map-Generator</a></p>
-    <p>Originally created by Garrett Mace (macetech.com), inspired by Mark Kriegsman</p>
+    <h2>FastLED XY Map Generator</h2>
+    <P><b>The WLED versions have moved!</b> <a href="https://intrinsically-sublime.github.io/WLED-2D-gaps.json-Generator/">WLED 2d-gaps</a> and <a href="https://intrinsically-sublime.github.io/WLED-Ledmap.json-Generator/">WLED Ledmap</a></P>
     <hr>
     
     <h3>How to use</h3>
     <ol>
       <li>Configure the array by setting the maximum x and y dimensions and click Rebuild.<br>
       <li>Click the LEDs to edit the shape of the array by enabling and disabling pixels.<br>
-      <li>Copy the resulting code to the correct location.
-      <ul>
-        <li>For wLED 2d-gaps.json copy the resulting code into a "2d-gaps.json" file and upload it to your device via the webapp Settings/2D Configuration/upload
-        <li>For wLED ledmap.json copy the resulting code into an "ledmap.json" file and upload it to your device via http://yourdeviceip/edit (does not work in AP mode)
-        <li>For FastLED copy the resulting function and paste into your code.
-      </ul><br>
-<!--      <b>*</b> For wLED freestyle mode you must start with all pixels unchecked and then select them in the order you want them.<br>-->
-      <b>**</b> For wLED 2D-maps.json in "Map LED # to GRID #" mode you must set the array in WLED 2d settings top left horizontal (not serpentine) regardless of your actual layout.<br>
+      <li>Copy the resulting function and paste into your code.
     </ol>
     <hr>
-    
     <div class="controls">
-      <h3>Array</h3>
-      <input type="checkbox" id="clearAllCHK" onchange="clearAllPixels(this)">Start with all pixels unchecked</input><br>
-      <div class="inputBox"><input id="xdim" type="number" name="xdim" min="1" value="16"/><label class="inputText">Matrix Width</label></div>
-      <div class="inputBox"><input id="ydim" type="number" name="ydim" min="1" value="5"/><label class="inputText">Matrix Height</label></div>
-      <button id="rebuildArray" onclick="buildGrid()">Rebuild</button>
-      <hr style="width:20%;text-align:left;margin-left:0">
-      <form>
-        <label><b>WLED 2d-gaps.json</b></label>
-          <ul>
-            <input type="radio" checked id="gapCHK" name="outputMode" onchange="gapOutput(this)">
-            <label for="gapCHK">Normal</label>
-            <input type="radio" id="triCHK" name="outputMode" onchange="triOutput(this)">
-            <label for="triCHK">Tri-State</label><br>
-          </ul>
-        <label><b>WLED ledmap.json</b></label>
-          <ul>
-            <input type="radio" id="wLedCHK" name="outputMode" onchange="wLedOutput(this)">
-            <label for="wLedCHK">Normal</label>
-<!--            <input type="radio" id="freeCHK" name="outputMode" onchange="freeOutput(this)">-->
-<!--            <label for="freeCHK">Freestyle <b>*</b></label>--><br><br>
-            <input type="radio" checked id="BmapCHK" name="mapMode" onchange="wledMapB(this)">
-            <label for="BmapCHK">Map LED # to GRID #  <b> **</b></label><br>
-            <input type="radio" id="AmapCHK" name="mapMode" onchange="wledMapA(this)">
-            <label for="AmapCHK">Map GRID # to LED #</label><br>
-          </ul>
-        <label><b>FastLED config</b></label>
-          <ul>
-            <input type="radio" id="fastCHK" name="outputMode" onchange="fastLEDOutput(this)">
-            <label for="gapCHK">FastLED config</label><br><br>
-            <input type="checkbox" id="cylinderCHK" onchange="cylinderMatrix(this)">Wrap pixels at ends</input><br>
-            <div class="inputBox"><input id="poutBOX" onchange="parallelOut(this)" type="number" name="poutBOX" min="1" max="16" value="1"/>
-            <label class="inputText">Parallel Outputs</label></div>
-          </ul>
-          <hr style="width:20%;text-align:left;margin-left:0">
+      <div class="optionBox">
+        <label><b>Array</b></label>
+        <div class="inputBox">
+          <input id="xdim" type="number" name="xdim" min="1" value="16"/>
+          <label class="inputText">Width</label>
+        </div>
+        <div class="inputBox">
+          <input id="ydim" type="number" name="ydim" min="1" value="5"/>
+          <label class="inputText">Height</label>
+        </div>
+      </div>
+      <div class="optionBox">
+        <br>
+        <div class="buildBox">
+          <input type="checkbox" id="clearAllCHK" onchange="clearAllPixels(this)">
+          <label for="clearAllCHK">Start empty</label>
+        </div>
+        <div class="buildBox">
+          <button id="rebuildArray" onclick="buildGrid()">Rebuild</button>
+        </div>
+      </div>
+      <div class="optionBox">
         <label><b>Options</b></label>
-          <ul>
-            <input type="checkbox" id="serpentineCHK" onchange="serpentineLayout(this)">Serpentine</input><br>
-            <input type="checkbox" id="verticalCHK" onchange="verticalLayout(this)">Vertical</input><br>
-            <input type="checkbox" id="vflipCHK" onchange="vflipLayout(this)">V-Flip</input>
-            <input type="checkbox" id="hflipCHK" onchange="hflipLayout(this)">H-Flip</input><br>
-            <input type="checkbox" checked id="discardCHK" onchange="discardPixels(this)">Discard unchecked pixels</input><br>
-          </ul>
-      </form>
+        <div class="buildBox">
+          <div class="inputBox"><input id="poutBOX" onchange="parallelOut(this)" type="number" name="poutBOX" min="1" max="16" value="1"/>
+          <label class="inputText">Parallel Outputs</label></div>
+          <input type="checkbox" id="cylinderCHK" onchange="cylinderMatrix(this)">
+          <label for="discardCHK">Wrap pixels at ends</label><br>
+        </div><br>
+      </div>
+      <div class="optionBox">
+        <div class="buildBox">
+          <input type="checkbox" checked id="discardCHK" onchange="discardPixels(this)">
+          <label for="discardCHK">Discard unchecked pixels</label><br>
+          <input type="checkbox" id="serpentineCHK" onchange="serpentineLayout(this)">
+          <label for="discardCHK">Serpentine</label><br>
+          <input type="checkbox" id="verticalCHK" onchange="verticalLayout(this)">
+          <label for="discardCHK">Vertical</label><br>
+          <input type="checkbox" id="vflipCHK" onchange="vflipLayout(this)">
+          <label for="discardCHK">V-Flip</label>
+          <input type="checkbox" id="hflipCHK" onchange="hflipLayout(this)">
+          <label for="discardCHK">H-Flip</label>
+        </div>
+      </div>
+      <div class="optionBox">
+          <label for="discardCHK"><b>Matrix name</b></label>
+        <div class="buildBox">
+          <input class="nameBox" id="matrixName" type="text" name="matrixName" value="my_matrix"/><br>
+          <button class="button" id="downloadFile" onclick="download()">Download</button>
+        </div>
+      </div>
     </div>
 
-    <div id="ledgrid"></div>
+    <div class="ledGrid" id="ledgrid"></div>
     <div id="infoOut"></div>
     <br>
-    <div id="result">Map goes here.</div>
-  </body>
+    <div id="result"></div>
+    
+    <ul><br>
+      <label><b>ISSUES:</b></label> <a href="https://github.com/Intrinsically-Sublime/FastLED-XY-Map-Generator/issues">Github</a>
+        <hr style="width:35%;text-align:left;margin-left:0">
+      <label><b>CREDIT:</b></label>
+        <ul>
+          <p><a href="https://github.com/Intrinsically-Sublime/FastLED-XY-Map-Generator">FastLED XY Map Generator Code </a>by Intrinsically-Sublime<br> 
+          Based on FastLED <a href="https://github.com/macetech/FastLED-XY-Map-Generator"> XY-Map-Generator</a> by Garrett Mace</p>
+        </ul>
+        <hr style="width:35%;text-align:left;margin-left:0">
 </html>

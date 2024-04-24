@@ -6,12 +6,7 @@ function clearTest() {
   num = 0;
 }
 
-var triState = 0;
-var led2grid = 1;
-var freeStyle = 0;
-var gaps = 1;
-var wled = 0;
-var fastled = 0;
+var matrixName = "my_matrix";
 var num_leds = 0;
 var xdim = 0;
 var ydim = 0;
@@ -28,93 +23,6 @@ var wiringVert = "horizontal";
 var wiringVFlip = "top";
 var wiringHFlip = "left";
 var cylindrical = 0;
-var freestyleCounter = 0;
-var lastFreestyle = 0;
-
-function triOutput(event) {
-  if (event.checked) {
-    triState = 1;
-    freeStyle = 0;
-    gaps = 0;
-    wled = 0;
-    fastled = 0;
-    renumberLEDs();
-    drawArrows();
-    printMap();
-  }
-}
-
-function wledMapA(event) {
-  if (event.checked) {
-    led2grid = 0;
-    discardP = 0;
-    renumberLEDs();
-    drawArrows();
-    printMap();
-  }
-}
-
-function wledMapB(event) {
-  if (event.checked) {
-    led2grid = 1;
-    discardP = 1;
-    renumberLEDs();
-    drawArrows();
-    printMap();
-  }
-}
-
-//function freeOutput(event) {
-//  if (event.checked) {
-//    triState = 0;
-//    freeStyle = 1;
-//    gaps = 0;
-//    wled = 0;
-//    fastled = 0;
-//    renumberLEDs();
-//    drawArrows();
-//    printMap();
-//  }
-//}
-
-function gapOutput(event) {
-  if (event.checked) {
-    triState = 0;
-    freeStyle = 0;
-    gaps = 1;
-    wled = 0;
-    fastled = 0;
-    renumberLEDs();
-    drawArrows();
-    printMap();
-  }
-}
-
-function wLedOutput(event) {
-  if (event.checked) {
-    triState = 0;
-    freeStyle = 0;
-    gaps = 0;
-    wled = 1;
-    fastled = 0;
-    renumberLEDs();
-    drawArrows();
-    printMap();
-  }
-}
-
-function fastLEDOutput(event) {
-    if (event.checked) {
-    triState = 0;
-    freeStyle = 0;
-    gaps = 0;
-    wled = 0;
-    fastled = 1;
-    renumberLEDs();
-    drawArrows();
-    printMap();
-  }
-}
 
 function serpentineLayout(event) {
   if (event.checked) {
@@ -212,11 +120,6 @@ function verticalLayout(event) {
 }
 
 function buildArray(num_leds) {
-  triState = (document.getElementById("triCHK")).checked;
-//  freeStyle = (document.getElementById("freeCHK")).checked;
-  gaps = (document.getElementById("gapCHK")).checked;
-  wled = (document.getElementById("wLedCHK")).checked;
-  fastled = (document.getElementById("fastCHK")).checked;
   serpentine = (document.getElementById("serpentineCHK")).checked;
   vertical = (document.getElementById("verticalCHK")).checked;
   hflip = (document.getElementById("hflipCHK")).checked;
@@ -225,6 +128,7 @@ function buildArray(num_leds) {
   clearAll = (document.getElementById("clearAllCHK")).checked;
   wrapX = (document.getElementById("cylinderCHK")).checked;
   pout = (document.getElementById("poutBOX")).value;
+  matrixName = (document.getElementById("matrixName")).value;
 
   for (i = 0; i < num_leds; i++) {
     pixelarray[i] = [];
@@ -235,15 +139,12 @@ function buildArray(num_leds) {
     }
     pixelarray[i][1] = "N";	// N = No Arrow, R = Right, L = Left, D = Down, U = Up
     pixelarray[i][2] = 0;	  // LED Index number
-    pixelarray[i][3] = -1;	// Click Index number
   }
 
   pixelarray.join("\",\"");
 }
 
 function buildGrid(numBoxes) {
-  freestyleCounter = 0;
-  lastFreestyle = 0;
   gridHTML = "";
   container = document.getElementById('ledgrid');
   clearContents(container);
@@ -315,43 +216,22 @@ function clearArrows(element) {
 function clearButton(event) {
   eventindex = parseInt((event.id).replace(/[^0-9\.]/g, ''), 10);
   if (pixelarray[eventindex][0] == "E") {
-    if (freeStyle == 1 && pixelarray[eventindex][3] == lastFreestyle) {
-      pixelarray[eventindex][3] = -1;
-      lastFreestyle = lastFreestyle - 1;
-      freestyleCounter--;
+    if (discardP == 1) {
       event.className = "disabledPixel";
       pixelarray[eventindex][0] = "D";
-      clearArrows(event);
-    } else if (freeStyle == 0) {
-      if (discardP == 1) {
-        event.className = "disabledPixel";
-        pixelarray[eventindex][0] = "D";
-      } else {
-        event.className = "hiddenPixel";
-        pixelarray[eventindex][0] = "H";
-      }
-      clearArrows(event);
-    }
-  } else if (pixelarray[eventindex][0] == "D") {
-    if (triState == 1) {
+    } else {
       event.className = "hiddenPixel";
       pixelarray[eventindex][0] = "H";
-    } else {
-      event.className = "ledpixel";
-      pixelarray[eventindex][0] = "E";
     }
-    if (freeStyle == 1) {
-      pixelarray[eventindex][3] = freestyleCounter;
-      lastFreestyle = freestyleCounter;
-      freestyleCounter++;
-    }
-  } else if (pixelarray[eventindex][0] == "H") {
+    clearArrows(event);
+  } else {
     event.className = "ledpixel";
     pixelarray[eventindex][0] = "E";
     drawArrows();
   }
 
   renumberLEDs();
+  drawArrows();
   printMap();
 }
 
@@ -362,7 +242,7 @@ function clearContents(element) {
 function drawArrows() {
   for (i = 0; i < num_leds; i++) {
     pixelID = "pixel" + i;
-    if (pixelarray[i][0] == "E" && freeStyle != 1 && gaps != 1 && triState != 1) {
+    if (pixelarray[i][0] == "E") {
       pixelElement = document.getElementById(pixelID);
       clearArrows(pixelElement);
 
@@ -445,31 +325,11 @@ function renumberLEDs() {
 
         pixelarray[ledpos][1] = tdir;
         if (pixelarray[ledpos][0] == "E") {
-            if (gaps == 1 || triState == 1) {
-              pixelarray[ledpos][2] = 1;
-              activeLEDs++;
-            } else if (freeStyle == 1) {
-              pixelarray[ledpos][2] = pixelarray[ledpos][3];
-            } else {
-              pixelarray[ledpos][2] = activeLEDs;
-              activeLEDs++;
-            }
+          pixelarray[ledpos][2] = activeLEDs;
+          activeLEDs++;
         } else {
-          if (pixelarray[ledpos][0] == "D" || pixelarray[ledpos][0] == "H" ) {
-            if (wled == 1 || gaps == 1 || freeStyle == 1 || triState == 1) {
-              if ((gaps == 1 && discardP == 0) || (triState == 1 && pixelarray[ledpos][0] == "H")) {
-                pixelarray[ledpos][2] = 0;
-              } else if (freeStyle == 1 || discardP == 1 || triState == 1) {
-                pixelarray[ledpos][2] = -1;
-              } else {
-                pixelarray[ledpos][2] = inactiveLEDs;
-                inactiveLEDs++;
-              }
-            } else {
-              pixelarray[ledpos][2] = inactiveLEDs;
-              inactiveLEDs++;
-            }
-          }
+          pixelarray[ledpos][2] = inactiveLEDs;
+          inactiveLEDs++;
         }
 
       pixelID = "pixeltext" + ledpos;
@@ -505,49 +365,30 @@ function printMap() {
   mapDiv = document.getElementById("infoOut");
 
   mapHTML = "";
-  mapHTML += '<PRE>';  
-  if (fastled == 1) {
-    if (discardP == 1) {
-      mapHTML += '// XY mapping function discarding unchecked pixel data.<BR>';
-      mapHTML += '// Requires ' + (numleds * 3) + ' Bytes\'s of SRAM';
-      mapHTML += ' and ' + ((numleds * 30) / 1000) + ' ms/frame for WS2811 based LEDs.<BR>';
-      mapHTML += '// You are saving ' + ((((xdim * ydim) + 1) - numleds) * 3) + ' Bytes\'s of SRAM';
-      mapHTML += ' and ' + ((((((xdim * ydim) + 1) * 30) / 1000) - ((numleds * 30) / 1000)).toFixed(2)) + ' ms/frame for WS2811 based LEDs.<BR>';
-    } else {
-      mapHTML += '// XY mapping function preserving all pixel data.<BR>';
-      mapHTML += '// Requires ' + (numleds * 3) + ' Bytes\'s of SRAM';
-      mapHTML += ' and ' + ((numleds * 30) / 1000) + ' ms/frame for WS2811 based LEDs.<BR>';
-      mapHTML += '// You COULD save ' + ((numleds - (activeLEDcount + 1)) * 3) + ' Bytes\'s of SRAM';
-      mapHTML += ' and ' + (((((numleds * 30) / 1000)) - (((activeLEDcount + 1) * 30) / 1000)).toFixed(2)) + ' ms/frame for WS2811 based LEDs.<BR>';
-    }
-    if (pout > 1) {
-      mapHTML += '// Maximum frame rate for WS2811 based LEDs = ' + frameRate + ' FPS using ' + pout + ' parallel outputs.<BR>';
-      mapHTML += '// Connect LEDs every ' + Math.ceil((activeLEDcount / pout)) + ' LEDs for ' + pout + ' way parallel output.<BR>';
-    } else {
-      mapHTML += '// Maximum frame rate for WS2811 based LEDs = ' + frameRate + ' FPS using 1 output.<BR>';
-    }
-    if (wrapX == 1) {
-      mapHTML += '// Cylindrical wrapping enabled.<BR>';
-    }
-    mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.';
-  } else if (wled == 1) {
-    mapHTML += '// wLED ledmap.json file.<BR>';
-    if (led2grid == 1) {
-      mapHTML += "// 2D matrix settings in wLED must be Horizontal starting in the TOP LEFT HORIZONTAL(NO serpentine) regardless of your actual layout.<BR>";
-    }
-    mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.<BR>';
-    mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
-    mapHTML += '// Copy the entire array below, including the outer braces{}';
-  } else if (freeStyle == 1) {
-    mapHTML += '// wLED ledmap.json file.<BR>';
-    mapHTML += '// Wired freestyle following the order clicked.<BR>';
-    mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
-    mapHTML += '// Copy the entire array below, including the brackets[]';
+  mapHTML += '<PRE>';
+  if (discardP == 1) {
+    mapHTML += '// XY mapping function discarding unchecked pixel data.<BR>';
+    mapHTML += '// Requires ' + (numleds * 3) + ' Bytes\'s of SRAM';
+    mapHTML += ' and ' + ((numleds * 30) / 1000) + ' ms/frame for WS2811 based LEDs.<BR>';
+    mapHTML += '// You are saving ' + ((((xdim * ydim) + 1) - numleds) * 3) + ' Bytes\'s of SRAM';
+    mapHTML += ' and ' + ((((((xdim * ydim) + 1) * 30) / 1000) - ((numleds * 30) / 1000)).toFixed(2)) + ' ms/frame for WS2811 based LEDs.<BR>';
   } else {
-    mapHTML += '// wLED 2d-gaps.json file.<BR>';
-    mapHTML += '// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
-    mapHTML += '// Copy the entire array below, including the brackets[]';
+    mapHTML += '// XY mapping function preserving all pixel data.<BR>';
+    mapHTML += '// Requires ' + (numleds * 3) + ' Bytes\'s of SRAM';
+    mapHTML += ' and ' + ((numleds * 30) / 1000) + ' ms/frame for WS2811 based LEDs.<BR>';
+    mapHTML += '// You COULD save ' + ((numleds - (activeLEDcount + 1)) * 3) + ' Bytes\'s of SRAM';
+    mapHTML += ' and ' + (((((numleds * 30) / 1000)) - (((activeLEDcount + 1) * 30) / 1000)).toFixed(2)) + ' ms/frame for WS2811 based LEDs.<BR>';
   }
+  if (pout > 1) {
+    mapHTML += '// Maximum frame rate for WS2811 based LEDs = ' + frameRate + ' FPS using ' + pout + ' parallel outputs.<BR>';
+    mapHTML += '// Connect LEDs every ' + Math.ceil((activeLEDcount / pout)) + ' LEDs for ' + pout + ' way parallel output.<BR>';
+  } else {
+    mapHTML += '// Maximum frame rate for WS2811 based LEDs = ' + frameRate + ' FPS using 1 output.<BR>';
+  }
+  if (wrapX == 1) {
+    mapHTML += '// Cylindrical wrapping enabled.<BR>';
+  }
+  mapHTML += '// Wired in ' + wiringVert + ' ' + wiringSerp + ' layout starting at the ' + wiringVFlip + ' ' + wiringHFlip + ' corner.';
   mapHTML += '</PRE>';
 
   mapDiv.innerHTML = mapHTML;
@@ -557,134 +398,77 @@ function printMap() {
   mapHTML = "";
   ledindex = 0;
   mapHTML += '<PRE>';
-  if (fastled == 1) {
-    mapHTML += '// Parameters for width and height<BR>';
-    mapHTML += '#define MATRIX_WIDTH ' + xdim + '<BR>';
-    mapHTML += '#define MATRIX_HEIGHT ' + ydim + '<BR><BR>';
-  
-    mapHTML += '#define NUM_LEDS ' + visibleLEDs + '';
-    mapHTML += '	// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
-  
-    mapHTML += 'CRGB leds[' + numleds + '];';
-    if (discardP == 1) {
-      mapHTML += '	// 1 extra pixel for hiding discarded and out of bounds data<BR><BR>';
-    } else {
-      mapHTML += '	// 1 extra pixel for hiding out of bounds data<BR><BR>';
-    }
-  
-    if (wrapX == 1) {
-      mapHTML += '// Wrap function used by XY function and frame buffers<BR>';
-      mapHTML += 'int wrapX(int x) {<BR>';
-      mapHTML += '	if (x >= MATRIX_WIDTH) { return x - MATRIX_WIDTH; }<BR>	else if (x < 0) { ';
-      mapHTML += 'return MATRIX_WIDTH - abs(x); }<BR>	else { return x; }<BR>}<BR><BR>';
-    }
-  
-    if (visibleLEDs < 256) {
-      mapHTML += 'uint8_t XY ';
-    } else {
-      mapHTML += 'uint16_t XY ';
-    }
-  
-    if (xdim < 256 && ydim < 256) {
-      mapHTML += '(uint8_t x, uint8_t y, bool wrap = false) {<BR>';
-    } else {
-      mapHTML += '(uint16_t x, uint16_t y, bool wrap = false) {<BR>';
-    }
-  
-    if (wrapX == 1) {
-      mapHTML += '	// Wrap X around for use on cylinders<BR>	if (wrap) { x = wrapX(x); }<BR><BR>';
-    }
-  
-    mapHTML += '	// map anything outside of the matrix to the extra hidden pixel<BR>'
-    mapHTML += '	if (x >= MATRIX_WIDTH || y >= MATRIX_HEIGHT) { return ' + visibleLEDs + '; }<BR><BR>';
-  
-    if (visibleLEDs < 256) {
-      mapHTML += '	const uint8_t XYTable[] = ';
-    } else {
-      mapHTML += '	const uint16_t XYTable[] = ';
-    }
-    mapHTML += '{<BR>';
-    for (y = 0; y < ydim; y++) {
-      mapHTML += '		';
-      for (x = 0; x < xdim; x++) {
-        currentPixel = pixelarray[ledindex][2];
-        if (currentPixel >= visibleLEDs && discardP == 1) {
-          mapHTML += pad('    ', visibleLEDs, true);
-        } else {
-          mapHTML += pad('    ', currentPixel, true);
-        }
-        ledindex++;
-        if (ledindex < num_leds) mapHTML += ",";
-      }
-      mapHTML += "<BR>";
-    }
-    mapHTML += '	};<BR><BR>';
-    mapHTML += '	return XYTable[(y * MATRIX_WIDTH) + x];<BR>';
-    mapHTML += '}</PRE>';
+  mapHTML += '// Function created for ' + matrixName + '<BR>';
+  mapHTML += '// Parameters for width and height<BR>';
+  mapHTML += '#define MATRIX_WIDTH ' + xdim + '<BR>';
+  mapHTML += '#define MATRIX_HEIGHT ' + ydim + '<BR><BR>';
 
-  } else if (wled == 1 || freeStyle == 1) {
-    mapHTML += '{"n":"matrix","map":[<BR>';
-      for (x = 0; x < num_leds; x++) {
-        if (freeStyle == 1) {
-          if (led2grid == 1) {
-            if (pixelarray[ledindex][3] >= 0) {
-              mapHTML += pad('   ', pixelarray[ledindex][3], true);
-            } else {
-              mapHTML += pad('   ', -1, true);
-            }
-            ledindex++;
-            if (ledindex < num_leds) mapHTML += ",";
-            if ((x+1) % xdim === 0) mapHTML += '<BR>';
-          } else {
-            var freeOrder = 0;
-            while (freeOrder < num_leds) {
-              if (pixelarray[freeOrder][3] == ledindex) {
-                mapHTML += pad('   ', freeOrder, true);
-                ledindex++;
-                if (ledindex < activeLEDcount) mapHTML += ",";
-                if ((x+1) % xdim === 0) mapHTML += '<BR>';
-                break;
-              } else {
-                freeOrder++;
-              }
-            } 
-          } 
-        } else {
-          if (led2grid == 1) {
-            mapHTML += pad('  ', pixelarray[ledindex][2], true);
-            ledindex++;
-            if (ledindex < num_leds) mapHTML += ",";
-            if ((x+1) % xdim === 0) mapHTML += '<BR>';
-          } else {
-            var outOrder = 0;
-            while (outOrder < num_leds) {
-              if (pixelarray[outOrder][2] == ledindex && ledindex <= activeLEDcount) {
-                mapHTML += pad('   ', outOrder, true);
-                ledindex++;
-                if (ledindex < activeLEDcount) mapHTML += ",";
-                if ((x+1) % xdim === 0) mapHTML += '<BR>';
-                break;
-              } else {
-                outOrder++;
-              }
-            }
-          }
-        }
-      }
-    mapHTML += ']}</PRE>';
-    
+  mapHTML += '#define NUM_LEDS ' + visibleLEDs + '';
+  mapHTML += '	// ' + activeLEDcount + ' LEDs visible out of ' + (xdim * ydim) + '<BR><BR>';
+
+  mapHTML += 'CRGB leds[' + numleds + '];';
+  if (discardP == 1) {
+    mapHTML += '	// 1 extra pixel for hiding discarded and out of bounds data<BR><BR>';
   } else {
-    mapHTML += '[<BR>';
-      for (x = 0; x < num_leds; x++) {
-        mapHTML += pad('  ', pixelarray[ledindex][2], true);
-        ledindex++;
-        if (ledindex < num_leds) mapHTML += ",";
-        if ((x+1) % xdim === 0) mapHTML += '<BR>';
-      }
-    mapHTML += ']</PRE>';
+    mapHTML += '	// 1 extra pixel for hiding out of bounds data<BR><BR>';
   }
+
+  if (wrapX == 1) {
+    mapHTML += '// Wrap function used by XY function and frame buffers<BR>';
+    mapHTML += 'int wrapX(int x) {<BR>';
+    mapHTML += '	if (x >= MATRIX_WIDTH) { return x - MATRIX_WIDTH; }<BR>	else if (x < 0) { ';
+    mapHTML += 'return MATRIX_WIDTH - abs(x); }<BR>	else { return x; }<BR>}<BR><BR>';
+  }
+
+  if (visibleLEDs < 256) {
+    mapHTML += 'uint8_t XY ';
+  } else {
+    mapHTML += 'uint16_t XY ';
+  }
+
+  if (xdim < 256 && ydim < 256) {
+    mapHTML += '(uint8_t x, uint8_t y, bool wrap = false) {<BR>';
+  } else {
+    mapHTML += '(uint16_t x, uint16_t y, bool wrap = false) {<BR>';
+  }
+
+  if (wrapX == 1) {
+    mapHTML += '	// Wrap X around for use on cylinders<BR>	if (wrap) { x = wrapX(x); }<BR><BR>';
+  }
+
+  mapHTML += '	// map anything outside of the matrix to the extra hidden pixel<BR>'
+  mapHTML += '	if (x >= MATRIX_WIDTH || y >= MATRIX_HEIGHT) { return ' + visibleLEDs + '; }<BR><BR>';
+
+  if (visibleLEDs < 256) {
+    mapHTML += '	const uint8_t XYTable[] = ';
+  } else {
+    mapHTML += '	const uint16_t XYTable[] = ';
+  }
+  mapHTML += '{<BR>';
+  for (y = 0; y < ydim; y++) {
+    mapHTML += '		';
+    for (x = 0; x < xdim; x++) {
+      currentPixel = pixelarray[ledindex][2];
+      if (currentPixel >= visibleLEDs && discardP == 1) {
+        mapHTML += pad('    ', visibleLEDs, true);
+      } else {
+        mapHTML += pad('    ', currentPixel, true);
+      }
+      ledindex++;
+      if (ledindex < num_leds) mapHTML += ",";
+    }
+    mapHTML += "<BR>";
+  }
+  mapHTML += '	};<BR><BR>';
+  mapHTML += '	return XYTable[(y * MATRIX_WIDTH) + x];<BR>';
+  mapHTML += '}</PRE>';
 
   mapDiv.innerHTML = mapHTML;
 }
 
-window.onload = buildGrid;
+function loadGrid() {
+  renumberLEDs();
+  buildGrid();
+}
+
+window.onload = loadGrid;
