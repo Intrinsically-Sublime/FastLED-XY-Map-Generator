@@ -24,6 +24,15 @@ var wiringVFlip = "top";
 var wiringHFlip = "left";
 var cylindrical = 0;
 
+function download(){
+    var a = document.body.appendChild(
+        document.createElement("a")
+    );
+    a.download = "ledmap.json";
+    a.href = "data:text/html," + document.getElementById("result").innerText; // Grab the HTML
+    a.click(); // Trigger a click on the element
+}
+
 function serpentineLayout(event) {
   if (event.checked) {
     serpentine = 1;
