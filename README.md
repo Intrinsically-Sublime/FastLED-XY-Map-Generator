@@ -4,6 +4,7 @@ Try it LIVE! https://intrinsically-sublime.github.io/FastLED-XY-Map-Generator/
 
 ### Other versions
 WLED 2d-gap.json https://intrinsically-sublime.github.io/WLED-2D-gaps.json-Generator/
+
 WLED Ledmap.json https://intrinsically-sublime.github.io/WLED-Ledmap.json-Generator/
 
 ### About
