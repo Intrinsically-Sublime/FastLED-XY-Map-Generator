@@ -23,3 +23,4 @@ Changes from original:
 9) Wiring layout used to create function added to comments.
 10) Add option to wrap around at ends for cylindrical matrices.
 
+![Screenshot](https://github.com/Intrinsically-Sublime/FastLED-XY-Map-Generator/blob/master/FastLED-XY-map-generator_screenshot.png)
