@@ -128,23 +128,47 @@
   border-color: transparent transparent #FF0000 transparent;
 }
 
-
 .controls {
   font-size: 1em;
-  display: block;
   margin-bottom: 0.25em;
+  height: 6em;
+  
 }
+
+.optionBox {
+  float: left;
+  padding-left: 0.5em;
+  margin: 0.25em;
+}
+
+.ledGrid {
+  clear: both;
+}
+
+.buildBox {
+  height: 1.75em;
+  line-height: 1.5em;
+}
+
+.button {
+  width: 8.5em;
+  font-size: 1em;
+}
+
+.nameBox {
+  width: 8em;
+  font-size: 1em;
+  text-align: center;
+  margin-bottom: 0.4em;
+}
+
 .inputBox {
   height: 1.75em;
   line-height: 1.5em;
-  width: 14em;
-  display: block;
   padding-left: 0.25em;
-  margin-top: 0.25em;
 }
 
 .inputBox input {
-  display: block;
   float:left;
   font-size: 1em;
   padding: 0; margin: 0;
@@ -154,8 +178,8 @@
 .inputText {
   display:block;
   float:left;
-  width: 9em;
   padding-left: 0.25em;
+  width: auto;
 }
 
 #rebuildArray {
