@@ -7,6 +7,8 @@ WLED 2d-gap.json https://intrinsically-sublime.github.io/WLED-2D-gaps.json-Gener
 
 WLED Ledmap.json https://intrinsically-sublime.github.io/WLED-Ledmap.json-Generator/
 
+WLED Arbitrary Path Ledmap.json Generator https://intrinsically-sublime.github.io/WLED-Arbitrary-Path-Ledmap.json-Generator/
+
 ### About
 * Generates XY mapping function to be included in the FastLED config.
 
