@@ -25,12 +25,25 @@ var wiringHFlip = "left";
 var cylindrical = 0;
 
 function download(){
+    matrixName = (document.getElementById("matrixName")).value;
+    printMap();
     var a = document.body.appendChild(
         document.createElement("a")
     );
-    a.download = "ledmap.json";
+    if (matrixName == "my_matrix") {
+      a.download = "ledmap.json";
+    } else {
+      a.download = matrixName + ".ledmap.json";
+    }
+
     a.href = "data:text/html," + document.getElementById("result").innerText; // Grab the HTML
     a.click(); // Trigger a click on the element
+}
+
+function copyOutput(){
+  var result = document.getElementById("result").innerText;
+  navigator.clipboard.writeText(result);
+  alert('Copied ' + matrixName + ' to clipboard');
 }
 
 function serpentineLayout(event) {

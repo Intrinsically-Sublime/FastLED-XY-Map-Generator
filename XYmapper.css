@@ -131,7 +131,6 @@
 .controls {
   font-size: 1em;
   margin-bottom: 0.25em;
-  height: 6em;
   
 }
 
@@ -139,6 +138,7 @@
   float: left;
   padding-left: 0.5em;
   margin: 0.25em;
+  height: 6em;
 }
 
 .ledGrid {
